@@ -2,7 +2,7 @@ import pygame
 import threading
 
 from bloodyhell.eventdispatcher import EventDispatcher
-
+from bloodyhell.resourceloader import ResourceLoader
 
 class Layer(EventDispatcher):
 
@@ -33,9 +33,12 @@ class Layer(EventDispatcher):
                 layer.blit()
         self.blit()
 
+    def rect(self):
+        return self._rect
+
     def fill(self, color):
         self._surface.fill(color)
 
-    def rect(self):
-        return self._rect
+    def set_image(self, image_id):
+        self._surface = ResourceLoader().get_resource(image_id)
 

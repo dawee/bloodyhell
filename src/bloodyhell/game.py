@@ -4,14 +4,16 @@ import time
 
 from bloodyhell.eventdispatcher import EventDispatcher
 from bloodyhell.navigator import Navigator
+from bloodyhell.resourceloader import ResourceLoader
 
 class Game(object):
 
     FRAMES_PER_SECOND = 25
     FRAMES_MINIMUM_DELTA = 0.001
 
-    def __init__(self, name, resolution, view_type, fps = FRAMES_PER_SECOND):
+    def __init__(self, name, resolution, resources_folder, view_type, fps = FRAMES_PER_SECOND):
         super(Game, self).__init__()
+        ResourceLoader().set_resources_folder(resources_folder)
         pygame.init()
         self._window = pygame.display.set_mode(resolution)
         pygame.display.set_caption(name) 
