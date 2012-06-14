@@ -11,16 +11,17 @@ class Game(object):
     FRAMES_PER_SECOND = 25
     FRAMES_MINIMUM_DELTA = 0.001
 
-    def __init__(self, name, resolution, resources_folder, view_type, fps = FRAMES_PER_SECOND):
+    def __init__(self, name, resolution, resources_folder, fps = FRAMES_PER_SECOND):
         super(Game, self).__init__()
         ResourceLoader().set_resources_folder(resources_folder)
         pygame.init()
         self._window = pygame.display.set_mode(resolution)
         pygame.display.set_caption(name) 
-        self._screen = pygame.display.get_surface()
         self._frames_delta = 1.0 / Game.FRAMES_PER_SECOND
-        self._navigator = Navigator(self._screen)
-        self._navigator.set_current_view(view_type)
+        self._navigator = Navigator()
+
+    def navigator(self):
+        return self._navigator
 
     def run(self):
         while True:

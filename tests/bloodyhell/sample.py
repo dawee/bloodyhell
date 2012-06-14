@@ -5,13 +5,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from bloodyhell.game import Game
 from bloodyhell.view import View
-from bloodyhell.layer import Layer
+from bloodyhell.animatedlayer import AnimatedLayer
 
 
-class SquareActor(Layer):
+class Aladdin(AnimatedLayer):
 
-    def __init__(self, *args, **kwargs):
-        super(SquareActor, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(Aladdin, self).__init__()
         self.listen_key('right')
 
     def on_right_pressed(self):
@@ -21,17 +21,16 @@ class SquareActor(Layer):
         print 'right released'
 
 
-class PrintRight(View):
+class FirstLevel(View):
 
-    def __init__(self, *args, **kwargs):
-        super(PrintRight, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(FirstLevel, self).__init__()
         self.load_package('sprites')
-        self.fill((0, 0, 0))
-        layer = self.addLayer((100, 100), (300, 300))
-        layer.fill((0, 0, 0))
-        actor = layer.addLayer((10, 10), (30, 30), SquareActor)
-        from bloodyhell.resourceloader import ResourceLoader
-        print ResourceLoader().get_animation_frames('sprites.walker.walk')
+        self.load_package('sample')
+        self.set_image('sample.backgrounds.bg1')
+        aladdin = Aladdin()
+        self.addLayer(aladdin)
+        aladdin.set_animation('sprites.walker.walk')
         self.listen('quit')
 
     def on_quit(self, event):
@@ -41,9 +40,9 @@ def run():
     game = Game(
         'Sample',
         (800, 600),
-        os.path.join(os.path.dirname(__file__), 'res'),
-        PrintRight
+        os.path.join(os.path.dirname(__file__), 'res')
     )
+    game.navigator().set_current_view(FirstLevel())
     game.run()
 
 if __name__ == '__main__':
