@@ -51,4 +51,7 @@ class Layer(EventDispatcher):
 
     def set_image(self, image_id):
         self._surface = ResourceLoader().get_resource(image_id)
+        self._rect = pygame.Rect(
+            (self._rect.x, self._rect.y), self._surface.get_size()
+        )
 

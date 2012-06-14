@@ -31,6 +31,7 @@ class FirstLevel(View):
         aladdin = Aladdin()
         self.addLayer(aladdin)
         aladdin.set_animation('sprites.walker.walk')
+        aladdin.rect().y = self.rect().height - aladdin.rect().height - 30
         self.listen('quit')
 
     def on_quit(self, event):
