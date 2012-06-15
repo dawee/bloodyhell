@@ -1,9 +1,9 @@
 import pygame
-import threading
 
 from bloodyhell.eventdispatcher import EventDispatcher
 from bloodyhell.resourceloader import ResourceLoader
 from bloodyhell.layer.rect import Rect
+
 
 class Layer(EventDispatcher):
 

@@ -1,5 +1,6 @@
 import pygame
 
+
 class EventDispatcher(object):
 
     def __init__(self, auto_listen_keys=True):

@@ -1,6 +1,7 @@
 from bloodyhell.world import World
 from bloodyhell.view import View
 
+
 class Level(View):
 
     (
@@ -16,15 +17,15 @@ class Level(View):
         NEAR_DECORATION, NEAR_DECORATION_1, NEAR_DECORATION_2,
     ) = range(15)
 
-    def __init__(self, camera_config, parent=None, position=(0, 0), size=(0, 0)):
-        super(Level, self).__init__(parent, position, size)
-        self._world = World(self, camera_config)
+    def __init__(self, camera_config, gravity):
+        super(Level, self).__init__()
+        self._world = World(self, camera_config, gravity)
 
     def add_chunk(self, chunk, slot):
         self._world.add(chunk, slot)
 
     def on_frame(self, delta):
-        self._world.pre_display_update()
+        self._world.step(delta)
         super(Level, self).on_frame(delta)
 
     def world(self):

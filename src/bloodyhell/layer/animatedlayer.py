@@ -1,9 +1,10 @@
 from bloodyhell.layer import Layer
 from bloodyhell.resourceloader import ResourceLoader
 
+
 class AnimatedLayer(Layer):
 
-    def __init__(self, parent=None, position=(0, 0), size=(0,0)):
+    def __init__(self, parent=None, position=(0, 0), size=(0, 0)):
         super(AnimatedLayer, self).__init__(parent, position, size)
         self._frames = {}
         self._frame_index = None
