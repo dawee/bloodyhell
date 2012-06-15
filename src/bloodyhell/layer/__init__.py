@@ -3,16 +3,18 @@ import threading
 
 from bloodyhell.eventdispatcher import EventDispatcher
 from bloodyhell.resourceloader import ResourceLoader
+from bloodyhell.layer.rect import Rect
 
 class Layer(EventDispatcher):
 
     def __init__(self, parent=None, position=(0, 0), size=(0, 0)):
         super(Layer, self).__init__()
         self._parent = parent
-        self._surface = pygame.Surface(size)
-        self._rect = pygame.Rect(position, size)
-        self._slots = {}
         self._screen = pygame.display.get_surface()
+        self._surface = pygame.Surface(size)
+        self._rect = Rect(position, size)
+        self._slots = {}
+        self._image_id = None
 
     def addLayer(self, layer, slot=0):
         if not slot in self._slots:
@@ -28,13 +30,15 @@ class Layer(EventDispatcher):
         return self._surface
 
     def blit(self):
-        if self._parent is not None:
-            self._screen.blit(
-                self._surface, (
-                    self._parent.rect().x + self._rect.x,
-                    self._parent.rect().y + self._rect.y
-                )
+        if self._image_id is not None:
+            self._surface = ResourceLoader().get_resource(
+                self._image_id, (self._rect.width, self._rect.height)
             )
+        if self._parent is not None:
+            self._screen.blit(self._surface, (
+                self._parent.rect().x + self._rect.x,
+                self._parent.rect().y + self._rect.y
+            ))
         else:
             self._screen.blit(
                 self._surface, (self._rect.x, self._rect.y)
@@ -50,8 +54,4 @@ class Layer(EventDispatcher):
         return self._rect
 
     def set_image(self, image_id):
-        self._surface = ResourceLoader().get_resource(image_id)
-        self._rect = pygame.Rect(
-            (self._rect.x, self._rect.y), self._surface.get_size()
-        )
-
+        self._image_id = image_id

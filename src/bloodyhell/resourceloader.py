@@ -54,9 +54,10 @@ class ResourceLoader(object):
         package_path = os.path.join(self._resources_folder, package_name)
         os.path.walk(package_path, self.browse_folder, package_name)
 
-    def get_resource(self, full_resource_id):
+    def get_resource(self, full_resource_id, size):
         package_name, resource_id = full_resource_id.split('.', 1)
-        return self._resources[package_name][resource_id].copy()
+        surface = self._resources[package_name][resource_id].copy()
+        return pygame.transform.scale(surface, size)
 
     def get_animation_frames(self, full_resource_id_base):
         package_name, resource_id_base = full_resource_id_base.split('.', 1)

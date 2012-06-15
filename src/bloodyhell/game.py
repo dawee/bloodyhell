@@ -3,7 +3,7 @@ import threading
 import time
 
 from bloodyhell.eventdispatcher import EventDispatcher
-from bloodyhell.navigator import Navigator
+from bloodyhell.view.navigator import Navigator
 from bloodyhell.resourceloader import ResourceLoader
 
 class Game(object):
