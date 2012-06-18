@@ -17,7 +17,7 @@ class Game(object):
         pygame.init()
         self._window = pygame.display.set_mode(resolution)
         pygame.display.set_caption(name)
-        self._frames_delta = 1.0 / Game.FRAMES_PER_SECOND
+        self._frames_delta = 1.0 / fps
         self._navigator = Navigator()
 
     def navigator(self):
@@ -30,6 +30,6 @@ class Game(object):
             self._navigator.on_frame(self._frames_delta)
             for event in events:
                 self._navigator.on_event(event)
-            elapsed_time = time_reference - time.time()
+            elapsed_time = time.time() - time_reference
             if self._frames_delta - elapsed_time >= Game.FRAMES_MINIMUM_DELTA:
                 time.sleep(self._frames_delta - elapsed_time)

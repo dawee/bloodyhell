@@ -4,16 +4,18 @@ from bloodyhell.world.chunk import Chunk
 
 class Stence(Chunk):
 
-    def __init__(self, resource_id, default_animation, position, size):
+    def __init__(self, position, size, resource_id=None, default_animation=None):
         super(Stence, self).__init__(position, size)
-        self._resource_id = resource_id
-        self.loop(default_animation)
+        if resource_id is not None:
+            self._resource_id = resource_id
+            self.loop(default_animation)
 
     def append_to_world(self, world, space):
         width, height = self._size
         self._geometry = ode.GeomBox(space, lengths=(width, height, 1))
         x, y = self._position
         self._geometry.setPosition((x, y, -0.5))
+        self._geometry.chunk = self
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))

@@ -4,7 +4,7 @@ from bloodyhell.world.chunk import Chunk
 
 class Actor(Chunk):
 
-    HUMAN_DENSITY=1010
+    HUMAN_DENSITY = 101
 
     def __init__(self, resource_id, default_animation,
                          position, size, density=HUMAN_DENSITY):
@@ -17,12 +17,22 @@ class Actor(Chunk):
         width, height = self._size
         self._body = ode.Body(world)
         mass = ode.Mass()
-        mass.setBox(self._density, width, height, 1)
+        mass.setBox(self._density, width, height, width)
         self._body.setMass(mass)
         self._geometry = ode.GeomBox(space, lengths=(width, height, 1))
         self._geometry.setBody(self._body)
         x, y = self._position
         self._geometry.setPosition((x, y, -0.5))
+        self._geometry.chunk = self
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))
+
+    def set_linear_velocity(self, velocity):
+        self._body.setLinearVel(velocity)
+
+    def on_collision(self, world, chunk, contacts, contact_group):
+        for c in contacts:
+            j = ode.ContactJoint(world, contact_group, c)
+            j.attach(self.body(), chunk.body())
+        return True
