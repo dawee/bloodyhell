@@ -24,23 +24,20 @@ class Aladdin(Actor):
         )
         self.listen_key('right')
         self.listen_key('up')
-        self._walking = False
 
     def on_right_pressed(self):
-        self.set_linear_velocity((4, 0))
-        self._walking = True
+        self.add_force((150000, 0))
         self.loop('walk')
 
     def on_right_released(self):
-        self.set_linear_velocity((0, 0))
-        self._walking = False
+        self.add_force((-150000, 0))
         self.loop('stance')
 
     def on_up_pressed(self):
-        self.set_linear_velocity((0, 20))
+        self.add_force((0, 300000))
 
     def on_up_released(self):
-        self.set_linear_velocity((0, 0))
+        pass
 
 
 class FirstLevel(Level):

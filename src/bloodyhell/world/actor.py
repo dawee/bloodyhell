@@ -13,9 +13,8 @@ class Actor(Chunk):
         self._resource_id = resource_id
         self.loop(default_animation)
         self._density = density
-        self._x_linear_velocity = 0
-        self._y_linear_velocity = 0
         self._contact_group = ode.JointGroup()
+        self._paste = True
 
     def append_to_world(self, world, space):
         width, height = self._size
@@ -29,36 +28,18 @@ class Actor(Chunk):
         self._geometry.setPosition((x, y, -0.5))
         self._geometry.chunk = self
 
+    def add_force(self, force):
+        force_x, force_y = force
+        self._body.addForce((force_x, force_y, 0))
+        if force_y > 0:
+            self._paste = False
+
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))
 
-    def set_linear_velocity(self, velocity):
-        self._contact_group.empty()
-        self._x_linear_velocity, self._y_linear_velocity = velocity
-        self._body.setLinearVel(
-            (self._x_linear_velocity, self._y_linear_velocity, 0)
-        )
-
-    def _is_going_in_opposite_way(self, chunk):
-        chunk_x, chunk_y = chunk.position()
-        chunk_width, chunk_height = chunk.position()
-        x, y = self.position()
-        width, height = self.size()
-        if x + width <= chunk_x and self._x_linear_velocity < 0 \
-                or chunk_x + chunk_width <= x and self._x_linear_velocity > 0 \
-                or y + height <= chunk_y and self._y_linear_velocity > 0 \
-                or chunk_y + chunk_height <= y and self._y_linear_velocity < 0:
-            return True
-        else:
-            return False
-
     def on_collision(self, world, chunk, contacts, contact_group):
         self._contact_group.empty()
-        """
-        if self._is_going_in_opposite_way(chunk):
-            return False
-        """
-        if isinstance(chunk, Fence):
+        if isinstance(chunk, Fence) and self._paste:
             chunk_x, chunk_y = chunk.position()
             x, y = self.position()
             width, height = self.size()
@@ -67,3 +48,4 @@ class Actor(Chunk):
                 slider_joint.setAxis((1, 0, 0))
                 slider_joint.attach(self.body(), chunk.body())
                 return True
+        self._paste = True
