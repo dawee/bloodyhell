@@ -23,6 +23,7 @@ class World(object):
         chunk.append_to_world(self._ode_world, self._space)
         self._chunks.append(chunk)
         self._root_layer.addLayer(chunk.layer(), slot)
+        self._root_layer.add(chunk)
 
     def step(self, delta):
         self._space.collide(
@@ -30,10 +31,10 @@ class World(object):
             self._near_callback
         )
         self._ode_world.step(delta)
-        for chunk in self._chunks:
-            chunk.set_pending_position()
-            chunk.update_rect()
         self._contact_group.empty()
+        self._camera.update()
+        for chunk in self._chunks:
+            chunk.update()
 
     def camera(self):
         return self._camera

@@ -2,10 +2,11 @@ import ode
 from bloodyhell.world.chunk import Chunk
 
 
-class Stence(Chunk):
+class Fence(Chunk):
 
-    def __init__(self, position, size, resource_id=None, default_animation=None):
-        super(Stence, self).__init__(position, size)
+    def __init__(self, position, size,
+                        resource_id=None, default_animation=None):
+        super(Fence, self).__init__(position, size)
         if resource_id is not None:
             self._resource_id = resource_id
             self.loop(default_animation)

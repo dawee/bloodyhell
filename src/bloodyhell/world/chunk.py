@@ -1,6 +1,7 @@
 from bloodyhell.layer.animatedlayer import AnimatedLayer
 from bloodyhell.eventdispatcher import EventDispatcher
 
+
 class Chunk(EventDispatcher):
 
     def __init__(self, position, size):
@@ -11,7 +12,6 @@ class Chunk(EventDispatcher):
         self._size = size
         self._body = None
         self._geometry = None
-        self._pending_position_reset = None
 
     def append_to_world(self, world, space):
         pass
@@ -19,7 +19,7 @@ class Chunk(EventDispatcher):
     def set_camera(self, camera):
         self._camera = camera
 
-    def update_rect(self):
+    def update(self):
         if self._geometry is not None:
             x, y, z = self._geometry.getPosition()
             self._position = (x, y)
@@ -31,20 +31,11 @@ class Chunk(EventDispatcher):
     def layer(self):
         return self._layer
 
-    def reset_position(self, position):
-        self._pending_position_reset = position
-
-
     def set_position(self, position):
         self._position = position
         if self._geometry is not None:
             x, y = position
             self._geometry.setPosition((x, y, -0.5))
-
-    def set_pending_position(self):
-        if None not in [self._geometry, self._pending_position_reset]:
-            self.set_position(self._pending_position_reset)
-            self._pending_position_reset = None
 
     def on_collision(self, world, chunk, contacts, contact_group):
         return False

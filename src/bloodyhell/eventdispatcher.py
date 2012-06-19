@@ -31,8 +31,7 @@ class EventDispatcher(object):
 
     def on_event(self, event):
         for dispatcher in self._sub_dispatchers:
-            if dispatcher.on_event(event) == False:
-                return False
+            dispatcher.on_event(event)
         if event.type in self._callbacks:
             self._callbacks[event.type](event)
 
