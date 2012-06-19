@@ -14,7 +14,9 @@ class Camera(object):
         world_width, world_height = world_size
         layer.rect().width = (self._rect.width * world_width) / self._width
         layer.rect().height = (self._rect.height * world_height) / self._height
-        layer.rect().x, layer.rect().y = self._get_layer_point(world_position)
+        centered_x, centered_y = self._get_layer_point(world_position)
+        layer.rect().x = centered_x - layer.rect().width / 2
+        layer.rect().y = centered_y - layer.rect().height / 2
 
     def _get_layer_point(self, world_point):
         target_x, target_y = self._target
@@ -26,7 +28,6 @@ class Camera(object):
             target_y = self._limits['bottom'] + self._height / 2
         if target_y + self._height / 2 > self._limits['top']:
             target_y = self._limits['top'] - self._height / 2
-
         world_x, world_y = world_point
         target_layer_x, target_layer_y = (
             self._rect.x + (self._rect.width / 2),

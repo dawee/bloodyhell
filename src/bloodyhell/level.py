@@ -23,6 +23,7 @@ class Level(View):
 
     def add_chunk(self, chunk, slot):
         self._world.add(chunk, slot)
+        return chunk
 
     def on_frame(self, delta):
         self._world.step(delta)

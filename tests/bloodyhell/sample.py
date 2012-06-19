@@ -13,7 +13,7 @@ from bloodyhell.world.decoration import Decoration
 from bloodyhell.world.fence import Fence
 
 
-RESOLUTION = (200, 150)
+RESOLUTION = (800, 600)
 
 
 class Aladdin(Actor):
@@ -56,15 +56,15 @@ class FirstLevel(Level):
         self.loader().load_package('sample')
         # Create Background
         self.add_chunk(
-            Decoration((0, 10.0), (70.0, 10.0), 'sample.backgrounds.bg1'),
+            Decoration((35.0, 5.0), (70.0, 10.0), 'sample.backgrounds.bg1'),
             self.BACKGROUND
         )
         # Create Actor (aladdin)
         aladdin = Aladdin(position=(0.5, 10.0), size=(1.0, 1.7))
         self.add_chunk(aladdin, self.SPRITES)
         # Create Ground
-        ground = Fence((0, 0.9), (70.0, 1.0))
-        self.add_chunk(ground, self.FAR_DECORATION)
+        self.add_chunk(Fence((35.0, 0), (70.0, 1)), self.PLATFORM)
+        # Lock camera to Aladdin
         self.world().camera().watch(aladdin)
 
     def on_quit(self, event):

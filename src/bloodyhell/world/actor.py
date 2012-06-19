@@ -13,7 +13,6 @@ class Actor(Chunk):
         self._resource_id = resource_id
         self.loop(default_animation)
         self._density = density
-        self._contact_group = ode.JointGroup()
         self._paste = True
 
     def append_to_world(self, world, space):
@@ -38,13 +37,12 @@ class Actor(Chunk):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))
 
     def on_collision(self, world, chunk, contacts, contact_group):
-        self._contact_group.empty()
         if isinstance(chunk, Fence) and self._paste:
             chunk_x, chunk_y = chunk.position()
             x, y = self.position()
             width, height = self.size()
             if y + height >= chunk_y:
-                slider_joint = ode.SliderJoint(world, self._contact_group)
+                slider_joint = ode.SliderJoint(world, contact_group)
                 slider_joint.setAxis((1, 0, 0))
                 slider_joint.attach(self.body(), chunk.body())
                 return True

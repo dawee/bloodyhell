@@ -40,6 +40,9 @@ class Chunk(EventDispatcher):
     def on_collision(self, world, chunk, contacts, contact_group):
         return False
 
+    def fill(self, color):
+        self._layer.fill(color)
+
     def position(self):
         return self._position
 

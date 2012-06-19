@@ -55,3 +55,11 @@ class Layer(EventDispatcher):
 
     def set_image(self, image_id):
         self._image_id = image_id
+
+    def fill(self, hexcolor):
+        hexcolor = hexcolor.replace('#', '')
+        self._surface.fill((
+            int(hexcolor[0:2], 16),
+            int(hexcolor[2:4], 16),
+            int(hexcolor[4:6], 16),
+        ))
