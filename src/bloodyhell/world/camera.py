@@ -1,3 +1,4 @@
+from bloodyhell.layer.rect import Rect
 
 
 class Camera(object):
@@ -17,6 +18,28 @@ class Camera(object):
         centered_x, centered_y = self._get_layer_point(world_position)
         layer.rect().x = centered_x - layer.rect().width / 2
         layer.rect().y = centered_y - layer.rect().height / 2
+
+        if layer.rect().right <= self._rect.x \
+                or self._rect.right <= layer.rect().x \
+                or layer.rect().bottom <= self._rect.y \
+                or self._rect.bottom <= layer.rect().y:
+            # Layer is not visible
+            layer.set_cropped_rect(None)
+        else:
+            cropped_rect = Rect(
+                0, 0, layer.rect().width, layer.rect().height
+            )
+            if layer.rect().x < self._rect.x:
+                cropped_rect.x = self._rect.x - layer.rect().x
+                cropped_rect.width -= cropped_rect.x
+            if layer.rect().right > self._rect.right:
+                cropped_rect.width -= (layer.rect().right - self._rect.right)
+            if layer.rect().y < self._rect.y:
+                cropped_rect.y = self._rect.y - layer.rect().y
+                cropped_rect.height -= cropped_rect.y
+            if layer.rect().bottom > self._rect.bottom:
+                cropped_rect.height -= (layer.rect().bottom - self._rect.bottom)
+            layer.set_cropped_rect(cropped_rect)
 
     def _get_layer_point(self, world_point):
         target_x, target_y = self._target

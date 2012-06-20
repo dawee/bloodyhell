@@ -13,6 +13,7 @@ class Layer(EventDispatcher):
         self._screen = pygame.display.get_surface()
         self._surface = pygame.Surface(size)
         self._rect = Rect(position, size)
+        self._cropped_rect = Rect((0, 0), size)
         self._slots = {}
         self._image_id = None
 
@@ -30,19 +31,20 @@ class Layer(EventDispatcher):
         return self._surface
 
     def blit(self):
-        if self._image_id is not None:
-            self._surface = ResourceLoader().get_resource(
-                self._image_id, (self._rect.width, self._rect.height)
-            )
-        if self._parent is not None:
-            self._screen.blit(self._surface, (
-                self._parent.rect().x + self._rect.x,
-                self._parent.rect().y + self._rect.y
-            ))
-        else:
-            self._screen.blit(
-                self._surface, (self._rect.x, self._rect.y)
-            )
+        if self._cropped_rect is not None:
+            if self._image_id is not None:
+                self._surface = ResourceLoader().get_resource(
+                    self._image_id, self._rect, self._cropped_rect
+                )
+            if self._parent is not None:
+                self._screen.blit(self._surface, (
+                    self._parent.rect().x + self._rect.x + self._cropped_rect.x,
+                    self._parent.rect().y + self._rect.y + self._cropped_rect.y
+                ))
+            else:
+                self._screen.blit(
+                    self._surface, (self._rect.x, self._rect.y)
+                )
 
     def on_frame(self, delta):
         self.blit()
@@ -52,6 +54,9 @@ class Layer(EventDispatcher):
 
     def rect(self):
         return self._rect
+
+    def set_cropped_rect(self, cropped_rect):
+        self._cropped_rect = cropped_rect
 
     def set_image(self, image_id):
         self._image_id = image_id

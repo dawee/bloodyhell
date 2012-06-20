@@ -2,6 +2,8 @@ import os
 import re
 import pygame
 
+from bloodyhell.layer.rect import Rect
+
 
 class ResourcesFolderMissing(Exception):
     """
@@ -56,10 +58,19 @@ class ResourceLoader(object):
         package_path = os.path.join(self._resources_folder, package_name)
         os.path.walk(package_path, self.browse_folder, package_name)
 
-    def get_resource(self, full_resource_id, size):
+    def get_resource(self, full_resource_id, rect, cropped_rect):
         package_name, resource_id = full_resource_id.split('.', 1)
-        surface = self._resources[package_name][resource_id].copy()
-        return pygame.transform.scale(surface, size)
+        surface = self._resources[package_name][resource_id]
+        cropped_surface = surface.subsurface(Rect(
+            cropped_rect.x * surface.get_width() / rect.width,
+            cropped_rect.y * surface.get_height() / rect.height,
+            cropped_rect.width * surface.get_width() / rect.width,
+            cropped_rect.height * surface.get_height() / rect.height
+        ))
+        return pygame.transform.scale(
+            cropped_surface,
+            (cropped_rect.width, cropped_rect.height)
+        )
 
     def get_animation_frames(self, full_resource_id_base):
         package_name, resource_id_base = full_resource_id_base.split('.', 1)

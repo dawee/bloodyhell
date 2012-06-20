@@ -43,10 +43,11 @@ class Aladdin(Actor):
 class FirstLevel(Level):
 
     def __init__(self):
+        res_width, res_height = RESOLUTION
         super(FirstLevel, self).__init__(camera_config={
             'target': (5.0, 3.5),
             'width': 10.0,
-            'rect': Rect((0, 0), RESOLUTION),
+            'rect': Rect((10, 10), (res_width - 20, res_height - 200)),
             'limits': {'left': 0.0, 'bottom': 0.0,
                        'right': 70.0, 'top': 10.0}
         }, gravity=(0, -9.8, 0))
