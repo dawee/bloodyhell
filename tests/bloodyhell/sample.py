@@ -13,7 +13,7 @@ from bloodyhell.world.decoration import Decoration
 from bloodyhell.world.fence import Fence
 
 
-RESOLUTION = (800, 600)
+RESOLUTION = (1024, 768)
 
 
 class Aladdin(Actor):
@@ -26,15 +26,15 @@ class Aladdin(Actor):
         self.listen_key('up')
 
     def on_right_pressed(self):
-        self.add_force((150000, 0))
+        self.set_x_velocity(10)
         self.loop('walk')
 
     def on_right_released(self):
-        self.add_force((-150000, 0))
+        self.set_x_velocity(0)
         self.loop('stance')
 
     def on_up_pressed(self):
-        self.add_force((0, 300000))
+        self.set_y_velocity(10)
 
     def on_up_released(self):
         pass

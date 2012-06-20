@@ -27,10 +27,14 @@ class Actor(Chunk):
         self._geometry.setPosition((x, y, -0.5))
         self._geometry.chunk = self
 
-    def add_force(self, force):
-        force_x, force_y = force
-        self._body.addForce((force_x, force_y, 0))
-        if force_y > 0:
+    def set_x_velocity(self, new_x_velocity):
+        x_vel, y_vel, z_vel = self._body.getLinearVel()
+        self._body.setLinearVel((new_x_velocity, y_vel, z_vel))
+
+    def set_y_velocity(self, new_y_velocity):
+        x_vel, y_vel, z_vel = self._body.getLinearVel()
+        self._body.setLinearVel((x_vel, new_y_velocity, z_vel))
+        if new_y_velocity > 0:
             self._paste = False
 
     def loop(self, animation):
