@@ -20,3 +20,20 @@ class Fence(Chunk):
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))
+
+    def on_collision(self, world, chunk, contacts, contact_group):
+        chunk_x, chunk_y = chunk.position()
+        x, y = self.position()
+        if chunk_y > y:
+            if chunk.pasted():
+                slider_joint = ode.SliderJoint(world, contact_group)
+                slider_joint.setAxis((1, 0, 0))
+                slider_joint.attach(chunk.body(), self.body())
+                chunk.set_y_velocity(0)
+                return True
+            else:
+                chunk.paste(True)
+        else:
+            for contact in contacts:
+                contact_joint = ode.ContactJoint(world, contact_group, contact)
+                contact_joint.attach(chunk.body(), self.body())

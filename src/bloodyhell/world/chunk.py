@@ -12,6 +12,13 @@ class Chunk(EventDispatcher):
         self._size = size
         self._body = None
         self._geometry = None
+        self._pasted = True
+
+    def pasted(self):
+        return self._pasted
+
+    def paste(self, value):
+        self._pasted = value
 
     def append_to_world(self, world, space):
         pass
@@ -51,3 +58,15 @@ class Chunk(EventDispatcher):
 
     def body(self):
         return self._body
+
+    def set_x_velocity(self, new_x_velocity):
+        if self._body:
+            x_vel, y_vel, z_vel = self._body.getLinearVel()
+            self._body.setLinearVel((new_x_velocity, y_vel, z_vel))
+
+    def set_y_velocity(self, new_y_velocity):
+        if self._body:
+            x_vel, y_vel, z_vel = self._body.getLinearVel()
+            self._body.setLinearVel((x_vel, new_y_velocity, z_vel))
+            if new_y_velocity > 0:
+                self.paste(False)

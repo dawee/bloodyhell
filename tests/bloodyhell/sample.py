@@ -13,7 +13,7 @@ from bloodyhell.world.decoration import Decoration
 from bloodyhell.world.fence import Fence
 
 
-RESOLUTION = (1024, 768)
+RESOLUTION = (400, 300)
 
 
 class Aladdin(Actor):
@@ -26,7 +26,7 @@ class Aladdin(Actor):
         self.listen_key('up')
 
     def on_right_pressed(self):
-        self.set_x_velocity(10)
+        self.set_x_velocity(3.0)
         self.loop('walk')
 
     def on_right_released(self):
@@ -34,7 +34,7 @@ class Aladdin(Actor):
         self.loop('stance')
 
     def on_up_pressed(self):
-        self.set_y_velocity(10)
+        self.set_y_velocity(4.0)
 
     def on_up_released(self):
         pass
@@ -64,7 +64,10 @@ class FirstLevel(Level):
         aladdin = Aladdin(position=(0.5, 10.0), size=(1.0, 1.7))
         self.add_chunk(aladdin, self.SPRITES)
         # Create Ground
-        self.add_chunk(Fence((35.0, 0), (70.0, 1)), self.PLATFORM)
+        self.add_chunk(Fence((35.0, 0), (70.0, 1.0)), self.PLATFORM)
+
+        self.add_chunk(Fence((10.0, 3.0), (3.0, 1.0)), self.PLATFORM)
+
         # Lock camera to Aladdin
         self.world().camera().watch(aladdin)
 
