@@ -36,6 +36,7 @@ class b2World(object):
 
     def __init__(self, worldAABB, gravity, doSleep):
         self.step = b2TimeStep()
+        self.m_stackAllocator = None
         self.m_contactManager = b2ContactManager()
         self.m_listener = None
         self.m_filter = b2CollisionFilter.b2_defaultFilter
@@ -47,6 +48,7 @@ class b2World(object):
         self.m_jointCount = 0
         self.m_bodyDestroyList = None
         self.m_allowSleep = doSleep
+        self.m_blockAllocator = None
         self.m_gravity = gravity
         self.m_contactManager.m_world = self
         self.m_broadPhase = b2BroadPhase(worldAABB, self.m_contactManager)
@@ -66,7 +68,7 @@ class b2World(object):
         if (self.m_bodyList):
             self.m_bodyList.m_prev = b
         self.m_bodyList = b
-        ++self.m_bodyCount
+        self.m_bodyCount += 1
         return b
 
     def DestroyBody(self, b):
@@ -206,9 +208,9 @@ class b2World(object):
                  continue
             island.Clear()
             stackCount = 0
-            stackCount += 1
             stack[stackCount] = seed
             seed.m_flags |= b2Body.e_islandFlag
+            stackCount += 1
             while (stackCount > 0):
                 stackCount -= 1
                 b = stack[stackCount]
@@ -227,10 +229,10 @@ class b2World(object):
                     if (other.m_flags & b2Body.e_islandFlag):
                         cn = cn.next
                         continue
-                    stackCount += 1
                     stack[stackCount] = other
                     other.m_flags |= b2Body.e_islandFlag
                     cn = cn.next
+                    stackCount += 1
                 jn = b.m_jointList
                 while(jn is not None):
                     if (jn.joint.m_islandFlag == True):
@@ -242,10 +244,11 @@ class b2World(object):
                     if (other.m_flags & b2Body.e_islandFlag):
                         jn = jn.next
                         continue
-                    stackCount += 1
                     stack[stackCount] = other
                     other.m_flags |= b2Body.e_islandFlag
                     jn = jn.next
+                    stackCount += 1
+            stackCount += 1
             island.Solve(self.step, self.m_gravity)
             self.m_positionIterationCount = b2Math.b2Max(self.m_positionIterationCount, b2Island.m_positionIterationCount)
             if (self.m_allowSleep):

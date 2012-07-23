@@ -144,7 +144,7 @@ class b2Island(object):
             b.m_R.Set(b.m_rotation)
         for i in range(self.m_jointCount):
             self.m_joints[i].PreparePositionSolver()
-        from box2d.dynamics.b2wolrd import b2World
+        from box2d.dynamics.b2world import b2World
         if (b2World.s_enablePositionCorrection):
             for b2Island.m_positionIterationCount in range(step.iterations):
                 contactsOkay = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte)
@@ -190,13 +190,13 @@ class b2Island(object):
                 b.m_flags |= b2Body.e_sleepFlag
 
     def AddBody(self,body):
-        self.m_bodyCount += 1
         self.m_bodies[self.m_bodyCount] = body
+        self.m_bodyCount += 1
 
     def AddContact(self,contact):
-        self.m_contactCount += 1
         self.m_contacts[self.m_contactCount] = contact
+        self.m_contactCount += 1
 
     def AddJoint(self,joint):
-        self.m_jointCount += 1
         self.m_joints[self.m_jointCount] = joint
+        self.m_jointCount += 1

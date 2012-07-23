@@ -18,7 +18,7 @@
 
 from box2d.common.math.b2vec2 import b2Vec2
 from box2d.common.b2settings import b2Settings
-from box2d.common.math import b2Math
+from box2d.common.math.b2math import b2Math
 from box2d.collision.shapes.b2shape import b2Shape
 
 
@@ -52,6 +52,7 @@ class b2ShapeDef(object):
             massData.mass = 4.0 * self.density * box.extents.x * box.extents.y
             massData.center.Set(0.0, 0.0)
             massData.I = massData.mass / 3.0 * b2Math.b2Dot(box.extents, box.extents)
+            print massData.mass
         elif self.type == b2Shape.e_polyShape:
             poly = self
             b2Shape.PolyMass(massData, poly.vertices, poly.vertexCount, self.density)
