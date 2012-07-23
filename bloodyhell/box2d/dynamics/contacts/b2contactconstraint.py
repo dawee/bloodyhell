@@ -17,8 +17,8 @@
 """
 
 from box2d.common.b2settings import b2Settings
-from box2d.math.b2vec2 import b2Vec2
-from box2d.dynamics.contacts.b2contactconstaintpoint import b2ContactConstraintPoint
+from box2d.common.math.b2vec2 import b2Vec2
+from box2d.dynamics.contacts.b2contactconstraintpoint import b2ContactConstraintPoint
 
 
 class b2ContactConstraint(object):

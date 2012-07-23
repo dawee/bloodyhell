@@ -20,9 +20,6 @@ import  math
 from box2d.collision.shapes.b2shape import b2Shape
 from box2d.dynamics.contacts.b2contactnode import b2ContactNode
 from box2d.dynamics.contacts.b2contactregister import b2ContactRegister
-from box2d.dynamics.contacts.b2circlecontact import b2CircleContact
-from box2d.dynamics.contacts.b2polycontact import b2PolyContact
-from box2d.dynamics.contacts.b2polyandcirclecontact import b2PolyAndCircleContact
 from box2d.common.math.b2math import b2Math
 
 
@@ -87,6 +84,9 @@ class b2Contact(object):
 
     @staticmethod
     def InitializeRegisters():
+        from box2d.dynamics.contacts.b2circlecontact import b2CircleContact
+        from box2d.dynamics.contacts.b2polycontact import b2PolyContact
+        from box2d.dynamics.contacts.b2polyandcirclecontact import b2PolyAndCircleContact
         b2Contact.s_registers = range(b2Shape.e_shapeTypeCount)
         for i in range(b2Shape.e_shapeTypeCount):
             b2Contact.s_registers[i] = range(b2Shape.e_shapeTypeCount)

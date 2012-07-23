@@ -16,13 +16,13 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
-import math
+from box2d import get_math
 
 
 class b2Settings(object):
 
     USHRT_MAX = 0x0000ffff
-    b2_pi = math.pi
+    b2_pi = get_math().pi
     b2_massUnitsPerKilogram = 1.0
     b2_timeUnitsPerSecond = 1.0
     b2_lengthUnitsPerMeter = 30.0

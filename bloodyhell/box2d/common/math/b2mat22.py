@@ -23,7 +23,7 @@ from box2d.common.math.b2vec2 import b2Vec2
 
 class b2Mat22(object):
 
-    def __init__(self,angle, c1, c2):
+    def __init__(self,angle=None, c1=None, c2=None):
         if (angle is None):
             angle = 0
         self.col1 = b2Vec2()

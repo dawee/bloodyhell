@@ -22,7 +22,13 @@ Also, some ideas, such integral values for fast compares comes from
 Bullet (http:/www.bulletphysics.com).
 """
 
-from box2d.common.b2settings import *
+from box2d.common.b2settings import b2Settings
+from box2d.common.math.b2vec2 import b2Vec2
+from box2d.common.math.b2math import b2Math
+from box2d.collision.b2pair import b2Pair
+from box2d.collision.b2pairmanager import b2PairManager
+from box2d.collision.b2bound import b2Bound
+from box2d.collision.b2boundvalues import b2BoundValues
 
 
 class b2BroadPhase(object):
@@ -64,20 +70,20 @@ class b2BroadPhase(object):
         dY -= worldAABB.minVertex.y
         self.m_quantizationFactor.x = b2Settings.USHRT_MAX / dX
         self.m_quantizationFactor.y = b2Settings.USHRT_MAX / dY
-        tProxy
+        from box2d.collision.b2proxy import b2Proxy
         for i in range(b2Settings.b2_maxProxies-1):
             tProxy = b2Proxy()
             self.m_proxyPool[i] = tProxy
             tProxy.SetNext(i + 1)
             tProxy.timeStamp = 0
             tProxy.overlapCount = b2BroadPhase.b2_invalid
-            tProxy.userData = null
+            tProxy.userData = None
         tProxy = b2Proxy()
         self.m_proxyPool[b2Settings.b2_maxProxies-1] = tProxy
         tProxy.SetNext(b2Pair.b2_nullProxy)
         tProxy.timeStamp = 0
         tProxy.overlapCount = b2BroadPhase.b2_invalid
-        tProxy.userData = null
+        tProxy.userData = None
         self.m_freeProxy = 0
         self.m_timeStamp = 1
         self.m_queryResultCount = 0
@@ -97,12 +103,11 @@ class b2BroadPhase(object):
 
     def GetProxy(self,proxyId):
         if (proxyId == b2Pair.b2_nullProxy or self.m_proxyPool[proxyId].IsValid() == False):
-            return null
+            return None
         return self.m_proxyPool[ proxyId ]
 
     def CreateProxy(self,aabb, userData):
         index = 0
-        proxy
         proxyId = self.m_freeProxy
         proxy = self.m_proxyPool[ proxyId ]
         self.m_freeProxy = proxy.GetNext()
@@ -124,8 +129,6 @@ class b2BroadPhase(object):
             tArr = range()
             j = 0
             tEnd = boundCount - upperIndex
-            tBound1
-            tBound2
             for j in range(tEnd):
                 tArr[j] = b2Bound()
                 tBound1 = tArr[j]
@@ -241,7 +244,7 @@ class b2BroadPhase(object):
         self.m_pairManager.Commit()
         self.m_queryResultCount = 0
         self.IncrementTimeStamp()
-        proxy.userData = null
+        proxy.userData = None
         proxy.overlapCount = b2BroadPhase.b2_invalid
         proxy.lowerBounds[0] = b2BroadPhase.b2_invalid
         proxy.lowerBounds[1] = b2BroadPhase.b2_invalid
@@ -254,11 +257,7 @@ class b2BroadPhase(object):
     def MoveProxy(self,proxyId, aabb):
         axis = 0
         index = 0
-        bound
-        prevBound
-        nextBound
         nextProxyId = 0
-        nextProxy
         if (proxyId == b2Pair.b2_nullProxy or b2Settings.b2_maxProxies <= proxyId):
             return
         if (aabb.IsValid() == False):
@@ -380,10 +379,6 @@ class b2BroadPhase(object):
         return count
 
     def Validate(self):
-        pair
-        proxy1
-        proxy2
-        overlap
         for axis in range(2):
             bounds = self.m_bounds[axis]
             boundCount = 2 * self.m_proxyCount

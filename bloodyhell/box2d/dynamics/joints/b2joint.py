@@ -16,12 +16,6 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
-from box2d.dynamics.joints.b2distancejoint import b2DistanceJoint
-from box2d.dynamics.joints.b2mousejoint import b2MouseJoint
-from box2d.dynamics.joints.b2prismaticjoint import b2PrismaticJoint
-from box2d.dynamics.joints.b2revolutejoint import b2RevoluteJoint
-from box2d.dynamics.joints.b2pulleyjoint import b2PulleyJoint
-from box2d.dynamics.joints.b2gearjoint import b2GearJoint
 from box2d.dynamics.joints.b2jointnode import b2JointNode
 
 
@@ -92,6 +86,12 @@ class b2Joint(object):
 
     @staticmethod
     def Create(definition, allocator):
+        from box2d.dynamics.joints.b2distancejoint import b2DistanceJoint
+        from box2d.dynamics.joints.b2mousejoint import b2MouseJoint
+        from box2d.dynamics.joints.b2prismaticjoint import b2PrismaticJoint
+        from box2d.dynamics.joints.b2revolutejoint import b2RevoluteJoint
+        from box2d.dynamics.joints.b2pulleyjoint import b2PulleyJoint
+        from box2d.dynamics.joints.b2gearjoint import b2GearJoint
         joint = None
         if definition.type == b2Joint.e_distanceJoint:
             joint = b2DistanceJoint(definition)

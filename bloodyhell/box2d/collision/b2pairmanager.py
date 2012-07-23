@@ -18,7 +18,7 @@
 
 from box2d.collision.b2pair import b2Pair
 from box2d.collision.b2bufferedpair import b2BufferedPair
-from box2d.common.b2settings import *
+from box2d.common.b2settings import b2Settings
 
 
 class b2PairManager(object):
@@ -32,27 +32,33 @@ class b2PairManager(object):
     m_pairBufferCount = 0
     m_hashTable = None
 
-    def __init__(self):
+    def __init__(self, broadPhase=None, callback=None):
+        if None not in [broadPhase, callback]:
+            self.m_broadPhase = broadPhase
+            self.m_callback = callback
+        else:
+            i = 0
+            self.m_hashTable = range(b2Pair.b2_tableCapacity)
+            for i in range(b2Pair.b2_tableCapacity):
+                self.m_hashTable[i] = b2Pair.b2_nullPair
+            self.m_pairs = range(b2Settings.b2_maxPairs)
+            for i in range(b2Settings.b2_maxPairs):
+                self.m_pairs[i] = b2Pair()
+            self.m_pairBuffer = range(b2Settings.b2_maxPairs)
+            for i in range(b2Settings.b2_maxPairs):
+                self.m_pairBuffer[i] = b2BufferedPair()
+            for i in range(b2Settings.b2_maxPairs):
+                self.m_pairs[i].proxyId1 = b2Pair.b2_nullProxy
+                self.m_pairs[i].proxyId2 = b2Pair.b2_nullProxy
+                self.m_pairs[i].userData = None
+                self.m_pairs[i].status = 0
+                self.m_pairs[i].next = (i + 1)
+            self.m_pairs[b2Settings.b2_maxPairs-1].next = b2Pair.b2_nullPair
+            self.m_pairCount = 0
+
+    def Initialize(self, broadPhase, callback):
         self.m_broadPhase = broadPhase
         self.m_callback = callback
-        i = 0
-        self.m_hashTable = range(b2Pair.b2_tableCapacity)
-        for i in range(b2Pair.b2_tableCapacity):
-            self.m_hashTable[i] = b2Pair.b2_nullPair
-        self.m_pairs = range(b2Settings.b2_maxPairs)
-        for i in range(b2Settings.b2_maxPairs):
-            self.m_pairs[i] = b2Pair()
-        self.m_pairBuffer = range(b2Settings.b2_maxPairs)
-        for i in range(b2Settings.b2_maxPairs):
-            self.m_pairBuffer[i] = b2BufferedPair()
-        for i in range(b2Settings.b2_maxPairs):
-            self.m_pairs[i].proxyId1 = b2Pair.b2_nullProxy
-            self.m_pairs[i].proxyId2 = b2Pair.b2_nullProxy
-            self.m_pairs[i].userData = null
-            self.m_pairs[i].status = 0
-            self.m_pairs[i].next = (i + 1)
-        self.m_pairs[b2Settings.b2_maxPairs-1].next = b2Pair.b2_nullPair
-        self.m_pairCount = 0
 
     """
     As proxies are created and moved, many pairs are created and destroyed. Even worse, the same
@@ -71,25 +77,27 @@ class b2PairManager(object):
 
     def AddBufferedPair(self,proxyId1, proxyId2):
         pair = self.AddPair(proxyId1, proxyId2)
-        if (pair.IsBuffered() == false):
+        if (pair.IsBuffered() == False):
             pair.SetBuffered()
             self.m_pairBuffer[self.m_pairBufferCount].proxyId1 = pair.proxyId1
             self.m_pairBuffer[self.m_pairBufferCount].proxyId2 = pair.proxyId2
             self.m_pairBufferCount += 1
         pair.ClearRemoved()
+        from box2d.collision.b2broadphase import b2BroadPhase
         if (b2BroadPhase.s_validate):
             self.ValidateBuffer()
 
     def RemoveBufferedPair(self,proxyId1, proxyId2):
         pair = self.Find(proxyId1, proxyId2)
-        if (pair == null):
+        if (pair == None):
             return
-        if (pair.IsBuffered() == false):
+        if (pair.IsBuffered() == False):
             pair.SetBuffered()
             self.m_pairBuffer[self.m_pairBufferCount].proxyId1 = pair.proxyId1
             self.m_pairBuffer[self.m_pairBufferCount].proxyId2 = pair.proxyId2
             self.m_pairBufferCount += 1
         pair.SetRemoved()
+        from box2d.collision.b2broadphase import b2BroadPhase
         if (b2BroadPhase.s_validate):
             self.ValidateBuffer()
 
@@ -103,18 +111,19 @@ class b2PairManager(object):
             proxy1 = proxies[ pair.proxyId1 ]
             proxy2 = proxies[ pair.proxyId2 ]
             if (pair.IsRemoved()):
-                if (pair.IsFinal() == true):
+                if (pair.IsFinal() == True):
                     self.m_callback.PairRemoved(proxy1.userData, proxy2.userData, pair.userData)
                 self.m_pairBuffer[removeCount].proxyId1 = pair.proxyId1
                 self.m_pairBuffer[removeCount].proxyId2 = pair.proxyId2
                 removeCount += 1
             else:
-                if (pair.IsFinal() == false):
+                if (pair.IsFinal() == False):
                     pair.userData = self.m_callback.PairAdded(proxy1.userData, proxy2.userData)
                     pair.SetFinal()
         for i in range(removeCount):
             self.RemovePair(self.m_pairBuffer[i].proxyId1, self.m_pairBuffer[i].proxyId2)
         self.m_pairBufferCount = 0
+        from box2d.collision.b2broadphase import b2BroadPhase
         if (b2BroadPhase.s_validate):
             self.ValidateTable()
 
@@ -125,7 +134,7 @@ class b2PairManager(object):
             proxyId2 = temp
         mHash = b2PairManager.Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask
         pair = pair = self.FindHash(proxyId1, proxyId2, mHash)
-        if (pair != null):
+        if (pair != None):
             return pair
         pIndex = self.m_freePair
         pair = self.m_pairs[pIndex]
@@ -133,7 +142,7 @@ class b2PairManager(object):
         pair.proxyId1 = proxyId1
         pair.proxyId2 = proxyId2
         pair.status = 0
-        pair.userData = null
+        pair.userData = None
         pair.next = self.m_hashTable[mHash]
         self.m_hashTable[mHash] = pIndex
         ++self.m_pairCount
@@ -146,7 +155,7 @@ class b2PairManager(object):
             proxyId2 = temp
         mHash = b2PairManager.Hash(proxyId1, proxyId2) & b2Pair.b2_tableMask
         node = self.m_hashTable[mHash]
-        pNode = null
+        pNode = None
         while (node != b2Pair.b2_nullPair):
             if (b2PairManager.Equals(self.m_pairs[node], proxyId1, proxyId2)):
                 index = node
@@ -159,7 +168,7 @@ class b2PairManager(object):
                 pair.next = self.m_freePair
                 pair.proxyId1 = b2Pair.b2_nullProxy
                 pair.proxyId2 = b2Pair.b2_nullProxy
-                pair.userData = null
+                pair.userData = None
                 pair.status = 0
                 self.m_freePair = index
                 --self.m_pairCount
@@ -167,7 +176,7 @@ class b2PairManager(object):
             else:
                 pNode = self.m_pairs[node]
                 node = pNode.next
-        return null
+        return None
 
     def Find(self,proxyId1, proxyId2):
         if (proxyId1 > proxyId2):
@@ -179,10 +188,10 @@ class b2PairManager(object):
 
     def FindHash(self,proxyId1, proxyId2, hash):
         index = self.m_hashTable[hash]
-        while( index != b2Pair.b2_nullPair and b2PairManager.Equals(self.m_pairs[index], proxyId1, proxyId2) == false):
+        while( index != b2Pair.b2_nullPair and b2PairManager.Equals(self.m_pairs[index], proxyId1, proxyId2) == False):
             index = self.m_pairs[index].next
         if ( index == b2Pair.b2_nullPair ):
-            return null
+            return None
         return self.m_pairs[ index ]
 
     def ValidateBuffer(self):

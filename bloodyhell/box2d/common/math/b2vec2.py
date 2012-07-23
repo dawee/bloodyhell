@@ -21,7 +21,7 @@ import math
 
 class b2Vec2(object):
 
-    def __init__(self,x_, y_):
+    def __init__(self,x_=0.0, y_=0.0):
         self.x=x_
         self.y=y_
 

@@ -17,7 +17,7 @@
 """
 
 from box2d.common.math.b2math import b2Math
-from box2d.dynamics.worldlistener import b2WorldListener
+from box2d.dynamics.b2worldlistener import b2WorldListener
 from box2d.dynamics.b2island import b2Island
 from box2d.dynamics.b2contactmanager import b2ContactManager
 from box2d.dynamics.contacts.b2contact import b2Contact

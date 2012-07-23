@@ -19,7 +19,7 @@
 
 class b2CollisionFilter(object):
 
-    b2_defaultFilter = b2CollisionFilter()
+    b2_defaultFilter = None
 
     def ShouldCollide(self,shape1, shape2):
         if (shape1.m_groupIndex == shape2.m_groupIndex and shape1.m_groupIndex != 0):
@@ -27,3 +27,4 @@ class b2CollisionFilter(object):
         collide = (shape1.m_maskBits & shape2.m_categoryBits) != 0 and (shape1.m_categoryBits & shape2.m_maskBits) != 0
         return collide
 
+b2CollisionFilter.b2_defaultFilter = b2CollisionFilter()

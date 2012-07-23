@@ -23,7 +23,7 @@ from box2d.common.math.b2vec2 import b2Vec2
 class b2BodyDef(object):
 
     def __init__(self):
-        self.shapes = range()
+        self.shapes = range(b2Settings.b2_maxShapesPerBody)
         self.userData = None
         for i in range(b2Settings.b2_maxShapesPerBody):
             self.shapes[i] = None

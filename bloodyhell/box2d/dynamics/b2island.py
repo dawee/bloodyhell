@@ -81,13 +81,10 @@ Baumgarte method in performance critical scenarios.
 """
 
 import sys
-
 from box2d.common.b2settings import b2Settings
 from box2d.common.math.b2math import b2Math
 from box2d.dynamics.contacts.b2contactsolver import b2ContactSolver
-from box2d.dynamics.b2wolrd import b2World
 from box2d.dynamics.b2body import b2Body
-
 
 class b2Island(object):
 
@@ -147,6 +144,7 @@ class b2Island(object):
             b.m_R.Set(b.m_rotation)
         for i in range(self.m_jointCount):
             self.m_joints[i].PreparePositionSolver()
+        from box2d.dynamics.b2wolrd import b2World
         if (b2World.s_enablePositionCorrection):
             for b2Island.m_positionIterationCount in range(step.iterations):
                 contactsOkay = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte)

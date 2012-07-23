@@ -17,7 +17,6 @@
 """
 
 from box2d.dynamics.contacts.b2contactconstraint import b2ContactConstraint
-from box2d.dynamics.b2world import b2World
 from box2d.common.b2settings import b2Settings
 from box2d.common.math.b2math import b2Math
 
@@ -118,6 +117,7 @@ class b2ContactSolver(object):
             tangentY = -normalX
             j = 0
             tCount = 0
+            from box2d.dynamics.b2world import b2World
             if (b2World.s_enableWarmStarting):
                 tCount = c.pointCount
                 for j in range(tCount):

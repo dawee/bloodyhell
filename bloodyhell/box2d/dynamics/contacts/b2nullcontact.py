@@ -25,7 +25,7 @@ from box2d.common.math.b2math import b2Math
 
 class b2NullContact(b2Contact):
 
-    def __init__(self,s1, s2):
+    def __init__(self,s1=None, s2=None):
         self.m_node1 = b2ContactNode()
         self.m_node2 = b2ContactNode()
         self.m_flags = 0
