@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -17,23 +17,19 @@
 """
 
 
-class b2DistanceJointDef(object):
-        """
-        inherit from "b2JointDef"
-        """
-Object.extend(b2DistanceJointDef.prototype, 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointdef import b2JointDef
+from box2d.common.math.b2vec2 import b2Vec2
+
+
+class b2DistanceJointDef(b2JointDef):
 
     def __init__(self):
-        """
-        TO FILL
-        """
         self.type = b2Joint.e_unknownJoint
-        self.userData = null
-        self.body1 = null
-        self.body2 = null
-        self.collideConnected = false
-        self.anchorPoint1 = new b2Vec2()
-        self.anchorPoint2 = new b2Vec2()
+        self.userData = None
+        self.body1 = None
+        self.body2 = None
+        self.collideConnected = False
+        self.anchorPoint1 = b2Vec2()
+        self.anchorPoint2 = b2Vec2()
         self.type = b2Joint.e_distanceJoint
-    anchorPoint1: new b2Vec2(),
-    anchorPoint2: new b2Vec2())

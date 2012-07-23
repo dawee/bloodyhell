@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,20 +16,14 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.dynamics.joints.b2joint import b2Joint
+
 
 class b2JointDef(object):
 
     def __init__(self):
-        """
-        TO FILL
-        """
         self.type = b2Joint.e_unknownJoint
-        self.userData = null
-        self.body1 = null
-        self.body2 = null
-        self.collideConnected = false
-    type: 0,
-    userData: null,
-    body1: null,
-    body2: null,
-    collideConnected: null
+        self.userData = None
+        self.body1 = None
+        self.body2 = None
+        self.collideConnected = False

@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -17,41 +17,36 @@
 """
 
 
-class b2PrismaticJoint(object):
-        """
-        inherit from "b2Joint"
-        """
-Object.extend(b2PrismaticJoint.prototype, 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jacobian import b2Jacobian
+from box2d.dynamics.joints.b2jointnode import b2JointNode
+from box2d.dynamics.b2world import b2World
+from box2d.common.math.b2vec2 import b2Vec2
+from box2d.common.math.b2math import b2Math
+from box2d.common.b2settings import b2Settings
+
+
+class b2PrismaticJoint(b2Joint):
 
     def GetAnchor1(self):
-        """
-        TO FILL
-        """
         b1 = self.m_body1
-        tVec = new b2Vec2()
+        tVec = b2Vec2()
         tVec.SetV(self.m_localAnchor1)
         tVec.MulM(b1.m_R)
         tVec.Add(b1.m_position)
         return tVec
 
     def GetAnchor2(self):
-        """
-        TO FILL
-        """
         b2 = self.m_body2
-        tVec = new b2Vec2()
+        tVec = b2Vec2()
         tVec.SetV(self.m_localAnchor2)
         tVec.MulM(b2.m_R)
         tVec.Add(b2.m_position)
         return tVec
 
     def GetJointTranslation(self):
-        """
-        TO FILL
-        """
         b1 = self.m_body1
         b2 = self.m_body2
-        tMat
         tMat = b1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -71,12 +66,8 @@ Object.extend(b2PrismaticJoint.prototype,
         return translation
 
     def GetJointSpeed(self):
-        """
-        TO FILL
-        """
         b1 = self.m_body1
         b2 = self.m_body2
-        tMat
         tMat = b1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -100,76 +91,54 @@ Object.extend(b2PrismaticJoint.prototype,
         return speed
 
     def GetMotorForce(self,invTimeStep):
-        """
-        TO FILL
-        """
         return invTimeStep * self.m_motorImpulse
 
     def SetMotorSpeed(self,speed):
-        """
-        TO FILL
-        """
         self.m_motorSpeed = speed
 
     def SetMotorForce(self,force):
-        """
-        TO FILL
-        """
         self.m_maxMotorForce = force
 
     def GetReactionForce(self,invTimeStep):
-        """
-        TO FILL
-        """
         tImp = invTimeStep * self.m_limitImpulse
-        tMat
         tMat = self.m_body1.m_R
         ax1X = tImp * (tMat.col1.x * self.m_localXAxis1.x + tMat.col2.x * self.m_localXAxis1.y)
         ax1Y = tImp * (tMat.col1.y * self.m_localXAxis1.x + tMat.col2.y * self.m_localXAxis1.y)
         ay1X = tImp * (tMat.col1.x * self.m_localYAxis1.x + tMat.col2.x * self.m_localYAxis1.y)
         ay1Y = tImp * (tMat.col1.y * self.m_localYAxis1.x + tMat.col2.y * self.m_localYAxis1.y)
-        return new b2Vec2(ax1X+ay1X, ax1Y+ay1Y)
+        return b2Vec2(ax1X+ay1X, ax1Y+ay1Y)
 
     def GetReactionTorque(self,invTimeStep):
-        """
-        TO FILL
-        """
         return invTimeStep * self.m_angularImpulse
 
-    def __init__(self,def):
-        """
-        TO FILL
-        """
-        self.m_node1 = new b2JointNode()
-        self.m_node2 = new b2JointNode()
-        self.m_type = def.type
-        self.m_prev = null
-        self.m_next = null
-        self.m_body1 = def.body1
-        self.m_body2 = def.body2
-        self.m_collideConnected = def.collideConnected
-        self.m_islandFlag = false
-        self.m_userData = def.userData
-        self.m_localAnchor1 = new b2Vec2()
-        self.m_localAnchor2 = new b2Vec2()
-        self.m_localXAxis1 = new b2Vec2()
-        self.m_localYAxis1 = new b2Vec2()
-        self.m_linearJacobian = new b2Jacobian()
-        self.m_motorJacobian = new b2Jacobian()
-        tMat
-        tX
-        tY
+    def __init__(self, definition):
+        self.m_node1 = b2JointNode()
+        self.m_node2 = b2JointNode()
+        self.m_type = definition.type
+        self.m_prev = None
+        self.m_next = None
+        self.m_body1 = definition.body1
+        self.m_body2 = definition.body2
+        self.m_collideConnected = definition.collideConnected
+        self.m_islandFlag = False
+        self.m_userData = definition.userData
+        self.m_localAnchor1 = b2Vec2()
+        self.m_localAnchor2 = b2Vec2()
+        self.m_localXAxis1 = b2Vec2()
+        self.m_localYAxis1 = b2Vec2()
+        self.m_linearJacobian = b2Jacobian()
+        self.m_motorJacobian = b2Jacobian()
         tMat = self.m_body1.m_R
-        tX = (def.anchorPoint.x - self.m_body1.m_position.x)
-        tY = (def.anchorPoint.y - self.m_body1.m_position.y)
+        tX = (definition.anchorPoint.x - self.m_body1.m_position.x)
+        tY = (definition.anchorPoint.y - self.m_body1.m_position.y)
         self.m_localAnchor1.Set((tX*tMat.col1.x + tY*tMat.col1.y), (tX*tMat.col2.x + tY*tMat.col2.y))
         tMat = self.m_body2.m_R
-        tX = (def.anchorPoint.x - self.m_body2.m_position.x)
-        tY = (def.anchorPoint.y - self.m_body2.m_position.y)
+        tX = (definition.anchorPoint.x - self.m_body2.m_position.x)
+        tY = (definition.anchorPoint.y - self.m_body2.m_position.y)
         self.m_localAnchor2.Set((tX*tMat.col1.x + tY*tMat.col1.y), (tX*tMat.col2.x + tY*tMat.col2.y))
         tMat = self.m_body1.m_R
-        tX = def.axis.x
-        tY = def.axis.y
+        tX = definition.axis.x
+        tY = definition.axis.y
         self.m_localXAxis1.Set((tX*tMat.col1.x + tY*tMat.col1.y), (tX*tMat.col2.x + tY*tMat.col2.y))
         self.m_localYAxis1.x = -self.m_localXAxis1.y
         self.m_localYAxis1.y = self.m_localXAxis1.x
@@ -184,20 +153,16 @@ Object.extend(b2PrismaticJoint.prototype,
         self.m_motorImpulse = 0.0
         self.m_limitImpulse = 0.0
         self.m_limitPositionImpulse = 0.0
-        self.m_lowerTranslation = def.lowerTranslation
-        self.m_upperTranslation = def.upperTranslation
-        self.m_maxMotorForce = def.motorForce
-        self.m_motorSpeed = def.motorSpeed
-        self.m_enableLimit = def.enableLimit
-        self.m_enableMotor = def.enableMotor
+        self.m_lowerTranslation = definition.lowerTranslation
+        self.m_upperTranslation = definition.upperTranslation
+        self.m_maxMotorForce = definition.motorForce
+        self.m_motorSpeed = definition.motorSpeed
+        self.m_enableLimit = definition.enableLimit
+        self.m_enableMotor = definition.enableMotor
 
     def PrepareVelocitySolver(self):
-        """
-        TO FILL
-        """
         b1 = self.m_body1
         b2 = self.m_body2
-        tMat
         tMat = b1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -219,20 +184,22 @@ Object.extend(b2PrismaticJoint.prototype,
         self.m_linearJacobian.linear2.y = ay1Y
         self.m_linearJacobian.angular1 = -(eX * ay1Y - eY * ay1X)
         self.m_linearJacobian.angular2 = r2X * ay1Y - r2Y * ay1X
-        self.m_linearMass =    invMass1 + invI1 * self.m_linearJacobian.angular1 * self.m_linearJacobian.angular1 +
-                        invMass2 + invI2 * self.m_linearJacobian.angular2 * self.m_linearJacobian.angular2
+        self.m_linearMass = invMass1 + invI1 * self.m_linearJacobian.angular1 * self.m_linearJacobian.angular1 \
+                            + invMass2 + invI2 * self.m_linearJacobian.angular2 * self.m_linearJacobian.angular2
         self.m_linearMass = 1.0 / self.m_linearMass
         self.m_angularMass = 1.0 / (invI1 + invI2)
         if (self.m_enableLimit or self.m_enableMotor):
             tMat = b1.m_R
             ax1X = tMat.col1.x * self.m_localXAxis1.x + tMat.col2.x * self.m_localXAxis1.y
             ax1Y = tMat.col1.y * self.m_localXAxis1.x + tMat.col2.y * self.m_localXAxis1.y
-            self.m_motorJacobian.linear1.x = -ax1X self.m_motorJacobian.linear1.y = -ax1Y
-            self.m_motorJacobian.linear2.x = ax1X self.m_motorJacobian.linear2.y = ax1Y
+            self.m_motorJacobian.linear1.x = -ax1X
+            self.m_motorJacobian.linear1.y = -ax1Y
+            self.m_motorJacobian.linear2.x = ax1X
+            self.m_motorJacobian.linear2.y = ax1Y
             self.m_motorJacobian.angular1 = -(eX * ax1Y - eY * ax1X)
             self.m_motorJacobian.angular2 = r2X * ax1Y - r2Y * ax1X
-            self.m_motorMass =    invMass1 + invI1 * self.m_motorJacobian.angular1 * self.m_motorJacobian.angular1 +
-                            invMass2 + invI2 * self.m_motorJacobian.angular2 * self.m_motorJacobian.angular2
+            self.m_motorMass = invMass1 + invI1 * self.m_motorJacobian.angular1 * self.m_motorJacobian.angular1 \
+                                + invMass2 + invI2 * self.m_motorJacobian.angular2 * self.m_motorJacobian.angular2
             self.m_motorMass = 1.0 / self.m_motorMass
             if (self.m_enableLimit):
                 dX = eX - r1X
@@ -240,20 +207,20 @@ Object.extend(b2PrismaticJoint.prototype,
                 jointTranslation = ax1X * dX + ax1Y * dY
                 if (b2Math.b2Abs(self.m_upperTranslation - self.m_lowerTranslation) < 2.0 * b2Settings.b2_linearSlop):
                     self.m_limitState = b2Joint.e_equalLimits
-                else if (jointTranslation <= self.m_lowerTranslation)
+                elif (jointTranslation <= self.m_lowerTranslation):
                     if (self.m_limitState != b2Joint.e_atLowerLimit):
                         self.m_limitImpulse = 0.0
                     self.m_limitState = b2Joint.e_atLowerLimit
-                else if (jointTranslation >= self.m_upperTranslation)
+                elif (jointTranslation >= self.m_upperTranslation):
                     if (self.m_limitState != b2Joint.e_atUpperLimit):
                         self.m_limitImpulse = 0.0
                     self.m_limitState = b2Joint.e_atUpperLimit
-                else
+                else:
                     self.m_limitState = b2Joint.e_inactiveLimit
                     self.m_limitImpulse = 0.0
-        if (self.m_enableMotor == false):
+        if (self.m_enableMotor == False):
             self.m_motorImpulse = 0.0
-        if (self.m_enableLimit == false):
+        if (self.m_enableLimit == False):
             self.m_limitImpulse = 0.0
         if (b2World.s_enableWarmStarting):
             P1X = self.m_linearImpulse * self.m_linearJacobian.linear1.x + (self.m_motorImpulse + self.m_limitImpulse) * self.m_motorJacobian.linear1.x
@@ -268,7 +235,7 @@ Object.extend(b2PrismaticJoint.prototype,
             b2.m_linearVelocity.x += invMass2 * P2X
             b2.m_linearVelocity.y += invMass2 * P2Y
             b2.m_angularVelocity += invI2 * L2
-        else
+        else:
             self.m_linearImpulse = 0.0
             self.m_angularImpulse = 0.0
             self.m_limitImpulse = 0.0
@@ -276,16 +243,12 @@ Object.extend(b2PrismaticJoint.prototype,
         self.m_limitPositionImpulse = 0.0
 
     def SolveVelocityConstraints(self,step):
-        """
-        TO FILL
-        """
         b1 = self.m_body1
         b2 = self.m_body2
         invMass1 = b1.m_invMass
         invMass2 = b2.m_invMass
         invI1 = b1.m_invI
         invI2 = b2.m_invI
-        oldLimitImpulse
         linearCdot = self.m_linearJacobian.Compute(b1.m_linearVelocity, b1.m_angularVelocity, b2.m_linearVelocity, b2.m_angularVelocity)
         linearImpulse = -self.m_linearMass * linearCdot
         self.m_linearImpulse += linearImpulse
@@ -317,11 +280,11 @@ Object.extend(b2PrismaticJoint.prototype,
             limitImpulse = -self.m_motorMass * limitCdot
             if (self.m_limitState == b2Joint.e_equalLimits):
                 self.m_limitImpulse += limitImpulse
-            else if (self.m_limitState == b2Joint.e_atLowerLimit)
+            elif (self.m_limitState == b2Joint.e_atLowerLimit):
                 oldLimitImpulse = self.m_limitImpulse
                 self.m_limitImpulse = b2Math.b2Max(self.m_limitImpulse + limitImpulse, 0.0)
                 limitImpulse = self.m_limitImpulse - oldLimitImpulse
-            else if (self.m_limitState == b2Joint.e_atUpperLimit)
+            elif (self.m_limitState == b2Joint.e_atUpperLimit):
                 oldLimitImpulse = self.m_limitImpulse
                 self.m_limitImpulse = b2Math.b2Min(self.m_limitImpulse + limitImpulse, 0.0)
                 limitImpulse = self.m_limitImpulse - oldLimitImpulse
@@ -333,18 +296,12 @@ Object.extend(b2PrismaticJoint.prototype,
             b2.m_angularVelocity += invI2 * limitImpulse * self.m_motorJacobian.angular2
 
     def SolvePositionConstraints(self):
-        """
-        TO FILL
-        """
-        limitC
-        oldLimitImpulse
         b1 = self.m_body1
         b2 = self.m_body2
         invMass1 = b1.m_invMass
         invMass2 = b2.m_invMass
         invI1 = b1.m_invI
         invI2 = b2.m_invI
-        tMat
         tMat = b1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -400,7 +357,7 @@ Object.extend(b2PrismaticJoint.prototype,
                 limitC = b2Math.b2Clamp(translation, -b2Settings.b2_maxLinearCorrection, b2Settings.b2_maxLinearCorrection)
                 limitImpulse = -self.m_motorMass * limitC
                 positionError = b2Math.b2Max(positionError, b2Math.b2Abs(angularC))
-            else if (self.m_limitState == b2Joint.e_atLowerLimit)
+            elif (self.m_limitState == b2Joint.e_atLowerLimit):
                 limitC = translation - self.m_lowerTranslation
                 positionError = b2Math.b2Max(positionError, -limitC)
                 limitC = b2Math.b2Clamp(limitC + b2Settings.b2_linearSlop, -b2Settings.b2_maxLinearCorrection, 0.0)
@@ -408,7 +365,7 @@ Object.extend(b2PrismaticJoint.prototype,
                 oldLimitImpulse = self.m_limitPositionImpulse
                 self.m_limitPositionImpulse = b2Math.b2Max(self.m_limitPositionImpulse + limitImpulse, 0.0)
                 limitImpulse = self.m_limitPositionImpulse - oldLimitImpulse
-            else if (self.m_limitState == b2Joint.e_atUpperLimit)
+            elif (self.m_limitState == b2Joint.e_atUpperLimit):
                 limitC = translation - self.m_upperTranslation
                 positionError = b2Math.b2Max(positionError, limitC)
                 limitC = b2Math.b2Clamp(limitC - b2Settings.b2_linearSlop, 0.0, b2Settings.b2_maxLinearCorrection)
@@ -425,25 +382,3 @@ Object.extend(b2PrismaticJoint.prototype,
             b2.m_rotation += invI2 * limitImpulse * self.m_motorJacobian.angular2
             b2.m_R.Set(b2.m_rotation)
         return positionError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
-    m_localAnchor1: new b2Vec2(),
-    m_localAnchor2: new b2Vec2(),
-    m_localXAxis1: new b2Vec2(),
-    m_localYAxis1: new b2Vec2(),
-    m_initialAngle: null,
-    m_linearJacobian: new b2Jacobian(),
-    m_linearMass: null,
-    m_linearImpulse: null,
-    m_angularMass: null,
-    m_angularImpulse: null,
-    m_motorJacobian: new b2Jacobian(),
-    m_motorMass: null,
-    m_motorImpulse: null,
-    m_limitImpulse: null,
-    m_limitPositionImpulse: null,
-    m_lowerTranslation: null,
-    m_upperTranslation: null,
-    m_maxMotorForce: null,
-    m_motorSpeed: null,
-    m_enableLimit: null,
-    m_enableMotor: null,
-    m_limitState: 0)

@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,34 +16,24 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointdef import b2JointDef
+from box2d.common.math.b2vec2 import b2Vec2
 
-class b2RevoluteJointDef(object):
-        """
-        inherit from "b2JointDef"
-        """
-Object.extend(b2RevoluteJointDef.prototype, 
+
+class b2RevoluteJointDef(b2JointDef):
 
     def __init__(self):
-        """
-        TO FILL
-        """
         self.type = b2Joint.e_unknownJoint
-        self.userData = null
-        self.body1 = null
-        self.body2 = null
-        self.collideConnected = false
+        self.userData = None
+        self.body1 = None
+        self.body2 = None
+        self.collideConnected = False
         self.type = b2Joint.e_revoluteJoint
-        self.anchorPoint = new b2Vec2(0.0, 0.0)
+        self.anchorPoint = b2Vec2(0.0, 0.0)
         self.lowerAngle = 0.0
         self.upperAngle = 0.0
         self.motorTorque = 0.0
         self.motorSpeed = 0.0
-        self.enableLimit = false
-        self.enableMotor = false
-    anchorPoint: null,
-    lowerAngle: null,
-    upperAngle: null,
-    motorTorque: null,
-    motorSpeed: null,
-    enableLimit: null,
-    enableMotor: null)
+        self.enableLimit = False
+        self.enableMotor = False

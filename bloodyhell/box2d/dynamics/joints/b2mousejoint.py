@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,103 +16,85 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointnode import b2JointNode
+from box2d.common.math.b2vec2 import b2Vec2
+from box2d.common.math.b2mat22 import b2Mat22
+from box2d.common.math.b2math import b2Math
+from box2d.common.b2settings import b2Settings
 
-class b2MouseJoint(object):
-        """
-        inherit from "b2Joint"
-        """
-Object.extend(b2MouseJoint.prototype, 
+
+class b2MouseJoint(b2Joint):
 
     def GetAnchor1(self):
-        """
-        TO FILL
-        """
         return self.m_target
 
     def GetAnchor2(self):
-        """
-        TO FILL
-        """
         tVec = b2Math.b2MulMV(self.m_body2.m_R, self.m_localAnchor)
         tVec.Add(self.m_body2.m_position)
         return tVec
 
     def GetReactionForce(self,invTimeStep):
-        """
-        TO FILL
-        """
-        F = new b2Vec2()
+        F = b2Vec2()
         F.SetV(self.m_impulse)
         F.Multiply(invTimeStep)
         return F
 
     def GetReactionTorque(self,invTimeStep):
-        """
-        TO FILL
-        """
         return 0.0
 
     def SetTarget(self,target):
-        """
-        TO FILL
-        """
         self.m_body2.WakeUp()
         self.m_target = target
 
-    def __init__(self,def):
-        """
-        TO FILL
-        """
-        self.m_node1 = new b2JointNode()
-        self.m_node2 = new b2JointNode()
-        self.m_type = def.type
-        self.m_prev = null
-        self.m_next = null
-        self.m_body1 = def.body1
-        self.m_body2 = def.body2
-        self.m_collideConnected = def.collideConnected
-        self.m_islandFlag = false
-        self.m_userData = def.userData
-        self.K = new b2Mat22()
-        self.K1 = new b2Mat22()
-        self.K2 = new b2Mat22()
-        self.m_localAnchor = new b2Vec2()
-        self.m_target = new b2Vec2()
-        self.m_impulse = new b2Vec2()
-        self.m_ptpMass = new b2Mat22()
-        self.m_C = new b2Vec2()
-        self.m_target.SetV(def.target)
+    def __init__(self, definition):
+        self.m_node1 = b2JointNode()
+        self.m_node2 = b2JointNode()
+        self.m_type = definition.type
+        self.m_prev = None
+        self.m_next = None
+        self.m_body1 = definition.body1
+        self.m_body2 = definition.body2
+        self.m_collideConnected = definition.collideConnected
+        self.m_islandFlag = False
+        self.m_userData = definition.userData
+        self.K = b2Mat22()
+        self.K1 = b2Mat22()
+        self.K2 = b2Mat22()
+        self.m_localAnchor = b2Vec2()
+        self.m_target = b2Vec2()
+        self.m_impulse = b2Vec2()
+        self.m_ptpMass = b2Mat22()
+        self.m_C = b2Vec2()
+        self.m_target.SetV(definition.target)
         tX = self.m_target.x - self.m_body2.m_position.x
         tY = self.m_target.y - self.m_body2.m_position.y
         self.m_localAnchor.x = (tX * self.m_body2.m_R.col1.x + tY * self.m_body2.m_R.col1.y)
         self.m_localAnchor.y = (tX * self.m_body2.m_R.col2.x + tY * self.m_body2.m_R.col2.y)
-        self.m_maxForce = def.maxForce
+        self.m_maxForce = definition.maxForce
         self.m_impulse.SetZero()
         mass = self.m_body2.m_mass
-        omega = 2.0 * b2Settings.b2_pi * def.frequencyHz
-        d = 2.0 * mass * def.dampingRatio * omega
+        omega = 2.0 * b2Settings.b2_pi * definition.frequencyHz
+        d = 2.0 * mass * definition.dampingRatio * omega
         k = mass * omega * omega
-        self.m_gamma = 1.0 / (d + def.timeStep * k)
-        self.m_beta = def.timeStep * k / (d + def.timeStep * k)
-    K: new b2Mat22(),
-    K1: new b2Mat22(),
-    K2: new b2Mat22(),
+        self.m_gamma = 1.0 / (d + definition.timeStep * k)
+        self.m_beta = definition.timeStep * k / (d + definition.timeStep * k)
 
     def PrepareVelocitySolver(self):
-        """
-        TO FILL
-        """
         b = self.m_body2
-        tMat
         tMat = b.m_R
         rX = tMat.col1.x * self.m_localAnchor.x + tMat.col2.x * self.m_localAnchor.y
         rY = tMat.col1.y * self.m_localAnchor.x + tMat.col2.y * self.m_localAnchor.y
         invMass = b.m_invMass
         invI = b.m_invI
-        self.K1.col1.x = invMass    self.K1.col2.x = 0.0
-        self.K1.col1.y = 0.0        self.K1.col2.y = invMass
-        self.K2.col1.x =  invI * rY * rY    self.K2.col2.x = -invI * rX * rY
-        self.K2.col1.y = -invI * rX * rY    self.K2.col2.y =  invI * rX * rX
+        self.K1.col1.x = invMass
+        self.K1.col2.x = 0.0
+        self.K1.col1.y = 0.0
+        self.K1.col2.y = invMass
+        self.K2.col1.x =  invI * rY * rY
+        self.K2.col2.x = -invI * rX * rY
+        self.K2.col1.y = -invI * rX * rY
+        self.K2.col2.y =  invI * rX * rX
         self.K.SetM(self.K1)
         self.K.AddM(self.K2)
         self.K.col1.x += self.m_gamma
@@ -128,11 +110,7 @@ Object.extend(b2MouseJoint.prototype,
         b.m_angularVelocity += invI * (rX * PY - rY * PX)
 
     def SolveVelocityConstraints(self,step):
-        """
-        TO FILL
-        """
         body = self.m_body2
-        tMat
         tMat = body.m_R
         rX = tMat.col1.x * self.m_localAnchor.x + tMat.col2.x * self.m_localAnchor.y
         rY = tMat.col1.y * self.m_localAnchor.x + tMat.col2.y * self.m_localAnchor.y
@@ -157,15 +135,4 @@ Object.extend(b2MouseJoint.prototype,
         body.m_angularVelocity += body.m_invI * (rX * impulseY - rY * impulseX)
 
     def SolvePositionConstraints(self):
-        """
-        TO FILL
-        """
-        return true
-    m_localAnchor: new b2Vec2(),
-    m_target: new b2Vec2(),
-    m_impulse: new b2Vec2(),
-    m_ptpMass: new b2Mat22(),
-    m_C: new b2Vec2(),
-    m_maxForce: null,
-    m_beta: null,
-    m_gamma: null)
+        return True

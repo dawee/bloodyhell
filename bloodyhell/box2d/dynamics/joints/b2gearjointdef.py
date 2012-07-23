@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -17,20 +17,14 @@
 """
 
 
-class b2GearJointDef(object):
-        """
-        inherit from "b2JointDef"
-        """
-Object.extend(b2GearJointDef.prototype, 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointdef import b2JointDef
+
+
+class b2GearJointDef(b2JointDef):
 
     def __init__(self):
-        """
-        TO FILL
-        """
         self.type = b2Joint.e_gearJoint
-        self.joint1 = null
-        self.joint2 = null
+        self.joint1 = None
+        self.joint2 = None
         self.ratio = 1.0
-    joint1: null,
-    joint2: null,
-    ratio: null)

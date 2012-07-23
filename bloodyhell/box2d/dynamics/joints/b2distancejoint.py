@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -15,54 +15,48 @@
 * misrepresented the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 """
+import math
+
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointnode import b2JointNode
+from box2d.dynamics.b2world import b2World
+from box2d.common.math.b2vec2 import b2Vec2
+from box2d.common.math.b2math import b2Math
+from box2d.common.b2settings import b2Settings
 
 
-class b2DistanceJoint(object):
-        """
-        inherit from "b2Joint"
-        """
-Object.extend(b2DistanceJoint.prototype, 
+class b2DistanceJoint(b2Joint):
 
-    def __init__(self,def):
-        """
-        TO FILL
-        """
-        self.m_node1 = new b2JointNode()
-        self.m_node2 = new b2JointNode()
-        self.m_type = def.type
-        self.m_prev = null
-        self.m_next = null
-        self.m_body1 = def.body1
-        self.m_body2 = def.body2
-        self.m_collideConnected = def.collideConnected
-        self.m_islandFlag = false
-        self.m_userData = def.userData
-        self.m_localAnchor1 = new b2Vec2()
-        self.m_localAnchor2 = new b2Vec2()
-        self.m_u = new b2Vec2()
-        tMat
-        tX
-        tY
+    def __init__(self, definition):
+        self.m_node1 = b2JointNode()
+        self.m_node2 = b2JointNode()
+        self.m_type = definition.type
+        self.m_prev = None
+        self.m_next = None
+        self.m_body1 = definition.body1
+        self.m_body2 = definition.body2
+        self.m_collideConnected = definition.collideConnected
+        self.m_islandFlag = False
+        self.m_userData = definition.userData
+        self.m_localAnchor1 = b2Vec2()
+        self.m_localAnchor2 = b2Vec2()
+        self.m_u = b2Vec2()
         tMat = self.m_body1.m_R
-        tX = def.anchorPoint1.x - self.m_body1.m_position.x
-        tY = def.anchorPoint1.y - self.m_body1.m_position.y
+        tX = definition.anchorPoint1.x - self.m_body1.m_position.x
+        tY = definition.anchorPoint1.y - self.m_body1.m_position.y
         self.m_localAnchor1.x = tX*tMat.col1.x + tY*tMat.col1.y
         self.m_localAnchor1.y = tX*tMat.col2.x + tY*tMat.col2.y
         tMat = self.m_body2.m_R
-        tX = def.anchorPoint2.x - self.m_body2.m_position.x
-        tY = def.anchorPoint2.y - self.m_body2.m_position.y
+        tX = definition.anchorPoint2.x - self.m_body2.m_position.x
+        tY = definition.anchorPoint2.y - self.m_body2.m_position.y
         self.m_localAnchor2.x = tX*tMat.col1.x + tY*tMat.col1.y
         self.m_localAnchor2.y = tX*tMat.col2.x + tY*tMat.col2.y
-        tX = def.anchorPoint2.x - def.anchorPoint1.x
-        tY = def.anchorPoint2.y - def.anchorPoint1.y
-        self.m_length = Math.sqrt(tX*tX + tY*tY)
+        tX = definition.anchorPoint2.x - definition.anchorPoint1.x
+        tY = definition.anchorPoint2.y - definition.anchorPoint1.y
+        self.m_length = math.sqrt(tX*tX + tY*tY)
         self.m_impulse = 0.0
 
     def PrepareVelocitySolver(self):
-        """
-        TO FILL
-        """
-        tMat
         tMat = self.m_body1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -71,10 +65,10 @@ Object.extend(b2DistanceJoint.prototype,
         r2Y = tMat.col1.y * self.m_localAnchor2.x + tMat.col2.y * self.m_localAnchor2.y
         self.m_u.x = self.m_body2.m_position.x + r2X - self.m_body1.m_position.x - r1X
         self.m_u.y = self.m_body2.m_position.y + r2Y - self.m_body1.m_position.y - r1Y
-        length = Math.sqrt(self.m_u.x*self.m_u.x + self.m_u.y*self.m_u.y)
+        length = math.sqrt(self.m_u.x*self.m_u.x + self.m_u.y*self.m_u.y)
         if (length > b2Settings.b2_linearSlop):
             self.m_u.Multiply( 1.0 / length )
-        else
+        else:
             self.m_u.SetZero()
         cr1u = (r1X * self.m_u.y - r1Y * self.m_u.x)
         cr2u = (r2X * self.m_u.y - r2Y * self.m_u.x)
@@ -89,14 +83,10 @@ Object.extend(b2DistanceJoint.prototype,
             self.m_body2.m_linearVelocity.x += self.m_body2.m_invMass * PX
             self.m_body2.m_linearVelocity.y += self.m_body2.m_invMass * PY
             self.m_body2.m_angularVelocity += self.m_body2.m_invI * (r2X * PY - r2Y * PX)
-        else
+        else:
             self.m_impulse = 0.0
 
     def SolveVelocityConstraints(self,step):
-        """
-        TO FILL
-        """
-        tMat
         tMat = self.m_body1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -120,10 +110,6 @@ Object.extend(b2DistanceJoint.prototype,
         self.m_body2.m_angularVelocity += self.m_body2.m_invI * (r2X * PY - r2Y * PX)
 
     def SolvePositionConstraints(self):
-        """
-        TO FILL
-        """
-        tMat
         tMat = self.m_body1.m_R
         r1X = tMat.col1.x * self.m_localAnchor1.x + tMat.col2.x * self.m_localAnchor1.y
         r1Y = tMat.col1.y * self.m_localAnchor1.x + tMat.col2.y * self.m_localAnchor1.y
@@ -132,7 +118,7 @@ Object.extend(b2DistanceJoint.prototype,
         r2Y = tMat.col1.y * self.m_localAnchor2.x + tMat.col2.y * self.m_localAnchor2.y
         dX = self.m_body2.m_position.x + r2X - self.m_body1.m_position.x - r1X
         dY = self.m_body2.m_position.y + r2Y - self.m_body1.m_position.y - r1Y
-        length = Math.sqrt(dX*dX + dY*dY)
+        length = math.sqrt(dX*dX + dY*dY)
         dX /= length
         dY /= length
         C = length - self.m_length
@@ -152,34 +138,16 @@ Object.extend(b2DistanceJoint.prototype,
         return b2Math.b2Abs(C) < b2Settings.b2_linearSlop
 
     def GetAnchor1(self):
-        """
-        TO FILL
-        """
         return b2Math.AddVV(self.m_body1.m_position , b2Math.b2MulMV(self.m_body1.m_R, self.m_localAnchor1))
 
     def GetAnchor2(self):
-        """
-        TO FILL
-        """
         return b2Math.AddVV(self.m_body2.m_position , b2Math.b2MulMV(self.m_body2.m_R, self.m_localAnchor2))
 
     def GetReactionForce(self,invTimeStep):
-        """
-        TO FILL
-        """
-        F = new b2Vec2()
+        F = b2Vec2()
         F.SetV(self.m_u)
         F.Multiply(self.m_impulse * invTimeStep)
         return F
 
     def GetReactionTorque(self,invTimeStep):
-        """
-        TO FILL
-        """
         return 0.0
-    m_localAnchor1: new b2Vec2(),
-    m_localAnchor2: new b2Vec2(),
-    m_u: new b2Vec2(),
-    m_impulse: null,
-    m_mass: null,
-    m_length: null)

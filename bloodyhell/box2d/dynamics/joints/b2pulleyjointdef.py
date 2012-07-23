@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,26 +16,24 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.dynamics.joints.b2joint import b2Joint
+from box2d.dynamics.joints.b2jointdef import b2JointDef
+from box2d.dynamics.joints.b2pulleyjoint import b2PulleyJoint
+from box2d.common.math.b2vec2 import b2Vec2
 
-class b2PulleyJointDef(object):
-        """
-        inherit from "b2JointDef"
-        """
-Object.extend(b2PulleyJointDef.prototype, 
+
+class b2PulleyJointDef(b2JointDef):
 
     def __init__(self):
-        """
-        TO FILL
-        """
         self.type = b2Joint.e_unknownJoint
-        self.userData = null
-        self.body1 = null
-        self.body2 = null
-        self.collideConnected = false
-        self.groundPoint1 = new b2Vec2()
-        self.groundPoint2 = new b2Vec2()
-        self.anchorPoint1 = new b2Vec2()
-        self.anchorPoint2 = new b2Vec2()
+        self.userData = None
+        self.body1 = None
+        self.body2 = None
+        self.collideConnected = False
+        self.groundPoint1 = b2Vec2()
+        self.groundPoint2 = b2Vec2()
+        self.anchorPoint1 = b2Vec2()
+        self.anchorPoint2 = b2Vec2()
         self.type = b2Joint.e_pulleyJoint
         self.groundPoint1.Set(-1.0, 1.0)
         self.groundPoint2.Set(1.0, 1.0)
@@ -44,11 +42,4 @@ Object.extend(b2PulleyJointDef.prototype,
         self.maxLength1 = 0.5 * b2PulleyJoint.b2_minPulleyLength
         self.maxLength2 = 0.5 * b2PulleyJoint.b2_minPulleyLength
         self.ratio = 1.0
-        self.collideConnected = true
-    groundPoint1: new b2Vec2(),
-    groundPoint2: new b2Vec2(),
-    anchorPoint1: new b2Vec2(),
-    anchorPoint2: new b2Vec2(),
-    maxLength1: null,
-    maxLength2: null,
-    ratio: null)
+        self.collideConnected = True
