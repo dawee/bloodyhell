@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -18,12 +18,9 @@
 
 
 class b2ContactNode(object):
-    other: null,
-    contact: null,
-    prev: null,
-    next: null,
 
     def __init__(self):
-        """
-        TO FILL
-        """
+        self.other = None
+        self.contact = None
+        self.prev = None
+        self.next = None

@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,90 +16,82 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+import math
 
-class b2PolyContact(object):
-        """
-        inherit from "b2Contact"
-        """
-Object.extend(b2PolyContact.prototype, 
+from box2d.dynamics.b2collision import b2Collision
+from box2d.dynamics.contacts.b2contactnode import b2ContactNode
+from box2d.dynamics.contacts.b2contact import b2Contact
+from box2d.common.math.b2math import b2Math
+from box2d.collision.shapes.b2manifold import b2Manifold
+
+class b2PolyContact(b2Contact):
 
     def __init__(self,s1, s2):
-        """
-        TO FILL
-        """
-        self.m_node1 = new b2ContactNode()
-        self.m_node2 = new b2ContactNode()
+        self.m_node1 = b2ContactNode()
+        self.m_node2 = b2ContactNode()
         self.m_flags = 0
-        if (!s1 or !s2):
-            self.m_shape1 = null
-            self.m_shape2 = null
+        if (not s1 or not s2):
+            self.m_shape1 = None
+            self.m_shape2 = None
             return
         self.m_shape1 = s1
         self.m_shape2 = s2
         self.m_manifoldCount = 0
-        self.m_friction = Math.sqrt(self.m_shape1.m_friction * self.m_shape2.m_friction)
+        self.m_friction = math.sqrt(self.m_shape1.m_friction * self.m_shape2.m_friction)
         self.m_restitution = b2Math.b2Max(self.m_shape1.m_restitution, self.m_shape2.m_restitution)
-        self.m_prev = null
-        self.m_next = null
-        self.m_node1.contact = null
-        self.m_node1.prev = null
-        self.m_node1.next = null
-        self.m_node1.other = null
-        self.m_node2.contact = null
-        self.m_node2.prev = null
-        self.m_node2.next = null
-        self.m_node2.other = null
-        self.m0 = new b2Manifold()
-        self.m_manifold = [new b2Manifold()]
+        self.m_prev = None
+        self.m_next = None
+        self.m_node1.contact = None
+        self.m_node1.prev = None
+        self.m_node1.next = None
+        self.m_node1.other = None
+        self.m_node2.contact = None
+        self.m_node2.prev = None
+        self.m_node2.next = None
+        self.m_node2.other = None
+        self.m0 = b2Manifold()
+        self.m_manifold = [b2Manifold()]
         self.m_manifold[0].pointCount = 0
-    m0: new b2Manifold(),
 
     def Evaluate(self):
-        """
-        TO FILL
-        """
         tMani = self.m_manifold[0]
         tPoints = self.m0.points
-for k in range(tMani.pointCount):
+        for k in range(tMani.pointCount):
             tPoint = tPoints[k]
             tPoint0 = tMani.points[k]
             tPoint.normalImpulse = tPoint0.normalImpulse
             tPoint.tangentImpulse = tPoint0.tangentImpulse
             tPoint.id = tPoint0.id.Copy()
-            """self.m0.points[k].id.features = new Features()
-            self.m0.points[k].id.features.referenceFace = self.m_manifold[0].points[k].id.features.referenceFace
-            self.m0.points[k].id.features.incidentEdge = self.m_manifold[0].points[k].id.features.incidentEdge
-            self.m0.points[k].id.features.incidentVertex = self.m_manifold[0].points[k].id.features.incidentVertex
-            self.m0.points[k].id.features.flip = self.m_manifold[0].points[k].id.features.flip"""
         self.m0.pointCount = tMani.pointCount
-        b2Collision.b2CollidePoly(tMani, self.m_shape1, self.m_shape2, false)
+        b2Collision.b2CollidePoly(tMani, self.m_shape1, self.m_shape2, False)
         if (tMani.pointCount > 0):
-            match = [false, false]
-for i in range(tMani.pointCount):
+            match = [False, False]
+            for i in range(tMani.pointCount):
                 cp = tMani.points[ i ]
                 cp.normalImpulse = 0.0
                 cp.tangentImpulse = 0.0
                 idKey = cp.id.key
-for j in range(self.m0.pointCount):
-                    if (match[j] == true):
+                for j in range(self.m0.pointCount):
+                    if (match[j] == True):
                         continue
                     cp0 = self.m0.points[j]
                     id0 = cp0.id
                     if (id0.key == idKey):
-                        match[j] = true
+                        match[j] = True
                         cp.normalImpulse = cp0.normalImpulse
                         cp.tangentImpulse = cp0.tangentImpulse
                         break
             self.m_manifoldCount = 1
-        else
+        else:
             self.m_manifoldCount = 0
 
     def GetManifolds(self):
-        """
-        TO FILL
-        """
         return self.m_manifold
-    m_manifold: [new b2Manifold()])
-b2PolyContact.Create = function(shape1, shape2, allocator)
-        return new b2PolyContact(shape1, shape2)
-b2PolyContact.Destroy = function(contact, allocator)
+
+    @staticmethod
+    def Create(shape1, shape2, allocator):
+        return b2PolyContact(shape1, shape2)
+
+    @staticmethod
+    def Destroy(contact, allocator):
+        pass

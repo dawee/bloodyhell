@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,21 +16,19 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.common.math.b2vec2 import b2Vec2
+
 
 class b2ContactConstraintPoint(object):
-    localAnchor1: new b2Vec2(),
-    localAnchor2: new b2Vec2(),
-    normalImpulse: null,
-    tangentImpulse: null,
-    positionImpulse: null,
-    normalMass: null,
-    tangentMass: null,
-    separation: null,
-    velocityBias: null,
 
     def __init__(self):
-        """
-        TO FILL
-        """
-        self.localAnchor1 = new b2Vec2()
-        self.localAnchor2 = new b2Vec2()
+        self.localAnchor1 = b2Vec2()
+        self.localAnchor2 = b2Vec2()
+        self.normalImpulse = None
+        self.tangentImpulse = None
+        self.positionImpulse = None
+        self.normalMass = None
+        self.tangentMass = None
+        self.separation = None
+        self.velocityBias = None
+

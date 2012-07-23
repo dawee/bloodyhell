@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -16,25 +16,25 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
+from box2d.dynamics.contacts.b2contactconstraint import b2ContactConstraint
+from box2d.dynamics.b2world import b2World
+from box2d.common.b2settings import b2Settings
+from box2d.common.math.b2math import b2Math
+
 
 class b2ContactSolver(object):
 
     def __init__(self,contacts, contactCount, allocator):
-        """
-        TO FILL
-        """
-        self.m_constraints = new Array()
+        self.m_constraints = []
         self.m_allocator = allocator
         i = 0
-        tVec
-        tMat
         self.m_constraintCount = 0
-for i in range(contactCount):
+        for i in range(contactCount):
             self.m_constraintCount += contacts[i].GetManifoldCount()
-for i in range(self.m_constraintCount):
-            self.m_constraints[i] = new b2ContactConstraint()
+        for i in range(self.m_constraintCount):
+            self.m_constraints[i] = b2ContactConstraint()
         count = 0
-for i in range(contactCount):
+        for i in range(contactCount):
             contact = contacts[i]
             b1 = contact.m_shape1.m_body
             b2 = contact.m_shape2.m_body
@@ -48,7 +48,7 @@ for i in range(contactCount):
             v2Y = b2.m_linearVelocity.y
             w1 = b1.m_angularVelocity
             w2 = b2.m_angularVelocity
-for j in range(manifoldCount):
+            for j in range(manifoldCount):
                 manifold = manifolds[ j ]
                 normalX = manifold.normal.x
                 normalY = manifold.normal.y
@@ -61,7 +61,7 @@ for j in range(manifoldCount):
                 c.pointCount = manifold.pointCount
                 c.friction = friction
                 c.restitution = restitution
-for k in range(c.pointCount):
+                for k in range(c.pointCount):
                     cp = manifold.points[ k ]
                     ccp = c.points[ k ]
                     ccp.normalImpulse = cp.normalImpulse
@@ -104,13 +104,7 @@ for k in range(c.pointCount):
                 ++count
 
     def PreSolve(self):
-        """
-        TO FILL
-        """
-        tVec
-        tVec2
-        tMat
-for i in range(self.m_constraintCount):
+        for i in range(self.m_constraintCount):
             c = self.m_constraints[ i ]
             b1 = c.body1
             b2 = c.body2
@@ -126,7 +120,7 @@ for i in range(self.m_constraintCount):
             tCount = 0
             if (b2World.s_enableWarmStarting):
                 tCount = c.pointCount
-for j in range(tCount):
+                for j in range(tCount):
                     ccp = c.points[ j ]
                     PX = ccp.normalImpulse*normalX + ccp.tangentImpulse*tangentX
                     PY = ccp.normalImpulse*normalY + ccp.tangentImpulse*tangentY
@@ -145,33 +139,16 @@ for j in range(tCount):
                     b2.m_linearVelocity.x += invMass2 * PX
                     b2.m_linearVelocity.y += invMass2 * PY
                     ccp.positionImpulse = 0.0
-            else
+            else:
                 tCount = c.pointCount
-for j in range(tCount):
+                for j in range(tCount):
                     ccp2 = c.points[ j ]
                     ccp2.normalImpulse = 0.0
                     ccp2.tangentImpulse = 0.0
                     ccp2.positionImpulse = 0.0
 
     def SolveVelocityConstraints(self):
-        """
-        TO FILL
-        """
-        j = 0
-        ccp
-        r1X
-        r1Y
-        r2X
-        r2Y
-        dvX
-        dvY
-        lambda
-        newImpulse
-        PX
-        PY
-        tMat
-        tVec
-for i in range(self.m_constraintCount):
+        for i in range(self.m_constraintCount):
             c = self.m_constraints[ i ]
             b1 = c.body1
             b2 = c.body2
@@ -188,7 +165,7 @@ for i in range(self.m_constraintCount):
             tangentX = normalY
             tangentY = -normalX
             tCount = c.pointCount
-for j in range(tCount):
+            for j in range(tCount):
                 ccp = c.points[ j ]
                 tMat = b1.m_R
                 tVec = ccp.localAnchor1
@@ -201,11 +178,11 @@ for j in range(tCount):
                 dvX = b2_linearVelocity.x + (-b2_angularVelocity * r2Y) - b1_linearVelocity.x - (-b1_angularVelocity * r1Y)
                 dvY = b2_linearVelocity.y + (b2_angularVelocity * r2X) - b1_linearVelocity.y - (b1_angularVelocity * r1X)
                 vn = dvX * normalX + dvY * normalY
-                lambda = -ccp.normalMass * (vn - ccp.velocityBias)
-                newImpulse = b2Math.b2Max(ccp.normalImpulse + lambda, 0.0)
-                lambda = newImpulse - ccp.normalImpulse
-                PX = lambda * normalX
-                PY = lambda * normalY
+                mLambda = -ccp.normalMass * (vn - ccp.velocityBias)
+                newImpulse = b2Math.b2Max(ccp.normalImpulse + mLambda, 0.0)
+                mLambda = newImpulse - ccp.normalImpulse
+                PX = mLambda * normalX
+                PY = mLambda * normalY
                 b1_linearVelocity.x -= invMass1 * PX
                 b1_linearVelocity.y -= invMass1 * PY
                 b1_angularVelocity -= invI1 * (r1X * PY - r1Y * PX)
@@ -216,12 +193,12 @@ for j in range(tCount):
                 dvX = b2_linearVelocity.x + (-b2_angularVelocity * r2Y) - b1_linearVelocity.x - (-b1_angularVelocity * r1Y)
                 dvY = b2_linearVelocity.y + (b2_angularVelocity * r2X) - b1_linearVelocity.y - (b1_angularVelocity * r1X)
                 vt = dvX*tangentX + dvY*tangentY
-                lambda = ccp.tangentMass * (-vt)
+                mLambda = ccp.tangentMass * (-vt)
                 maxFriction = c.friction * ccp.normalImpulse
-                newImpulse = b2Math.b2Clamp(ccp.tangentImpulse + lambda, -maxFriction, maxFriction)
-                lambda = newImpulse - ccp.tangentImpulse
-                PX = lambda * tangentX
-                PY = lambda * tangentY
+                newImpulse = b2Math.b2Clamp(ccp.tangentImpulse + mLambda, -maxFriction, maxFriction)
+                mLambda = newImpulse - ccp.tangentImpulse
+                PX = mLambda * tangentX
+                PY = mLambda * tangentY
                 b1_linearVelocity.x -= invMass1 * PX
                 b1_linearVelocity.y -= invMass1 * PY
                 b1_angularVelocity -= invI1 * (r1X * PY - r1Y * PX)
@@ -229,44 +206,12 @@ for j in range(tCount):
                 b2_linearVelocity.y += invMass2 * PY
                 b2_angularVelocity += invI2 * (r2X * PY - r2Y * PX)
                 ccp.tangentImpulse = newImpulse
-            """for (j = 0 j < tCount ++j)
-                ccp = c.points[ j ]
-                tMat = b1.m_R
-                tVec = ccp.localAnchor1
-                r1X = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y
-                r1Y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y
-                tMat = b2.m_R
-                tVec = ccp.localAnchor2
-                r2X = tMat.col1.x * tVec.x + tMat.col2.x * tVec.y
-                r2Y = tMat.col1.y * tVec.x + tMat.col2.y * tVec.y
-                dvX = b2_linearVelocity.x + (-b2_angularVelocity * r2Y) - b1_linearVelocity.x - (-b1_angularVelocity * r1Y)
-                dvY = b2_linearVelocity.y + (b2_angularVelocity * r2X) - b1_linearVelocity.y - (b1_angularVelocity * r1X)
-                vt = dvX*tangentX + dvY*tangentY
-                lambda = ccp.tangentMass * (-vt)
-                maxFriction = c.friction * ccp.normalImpulse
-                newImpulse = b2Math.b2Clamp(ccp.tangentImpulse + lambda, -maxFriction, maxFriction)
-                lambda = newImpulse - ccp.tangentImpulse
-                PX = lambda * tangentX
-                PY = lambda * tangentY
-                b1_linearVelocity.x -= invMass1 * PX
-                b1_linearVelocity.y -= invMass1 * PY
-                b1_angularVelocity -= invI1 * (r1X * PY - r1Y * PX)
-                b2_linearVelocity.x += invMass2 * PX
-                b2_linearVelocity.y += invMass2 * PY
-                b2_angularVelocity += invI2 * (r2X * PY - r2Y * PX)
-                ccp.tangentImpulse = newImpulse
-            """
             b1.m_angularVelocity = b1_angularVelocity
             b2.m_angularVelocity = b2_angularVelocity
 
     def SolvePositionConstraints(self,beta):
-        """
-        TO FILL
-        """
         minSeparation = 0.0
-        tMat
-        tVec
-for i in range(self.m_constraintCount):
+        for i in range(self.m_constraintCount):
             c = self.m_constraints[ i ]
             b1 = c.body1
             b2 = c.body2
@@ -280,10 +225,10 @@ for i in range(self.m_constraintCount):
             invI2 = b2.m_invI
             normalX = c.normal.x
             normalY = c.normal.y
-            tangentX = normalY
-            tangentY = -normalX
+            # tangentX = normalY
+            # tangentY = -normalX
             tCount = c.pointCount
-for j in range(tCount):
+            for j in range(tCount):
                 ccp = c.points[ j ]
                 tMat = b1.m_R
                 tVec = ccp.localAnchor1
@@ -321,17 +266,11 @@ for j in range(tCount):
         return minSeparation >= -b2Settings.b2_linearSlop
 
     def PostSolve(self):
-        """
-        TO FILL
-        """
-for i in range(self.m_constraintCount):
+        for i in range(self.m_constraintCount):
             c = self.m_constraints[ i ]
             m = c.manifold
-for j in range(c.pointCount):
+            for j in range(c.pointCount):
                 mPoint = m.points[j]
                 cPoint = c.points[j]
                 mPoint.normalImpulse = cPoint.normalImpulse
                 mPoint.tangentImpulse = cPoint.tangentImpulse
-    m_allocator: null,
-    m_constraints: new Array(),
-    m_constraintCount: 0

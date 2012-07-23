@@ -1,4 +1,4 @@
-﻿"""
+"""
 * Copyright (c) 2006-2007 Erin Catto http:
 *
 * This software is provided 'as-is', without any express or implied
@@ -18,11 +18,8 @@
 
 
 class b2ContactRegister(object):
-    createFcn: null,
-    destroyFcn: null,
-    primary: null,
 
     def __init__(self):
-        """
-        TO FILL
-        """
+        self.createFcn = None
+        self.destroyFcn = None
+        self.primary = None
