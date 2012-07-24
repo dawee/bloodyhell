@@ -29,6 +29,7 @@ class Aladdin(Actor):
     def update(self):
         super(Aladdin, self).update()
         if self._walking:
+            self._body.WakeUp()
             self.set_x_velocity(6.0)
 
     def on_right_pressed(self):
