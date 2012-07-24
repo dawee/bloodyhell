@@ -11,7 +11,6 @@ class Chunk(EventDispatcher):
         self._position = position
         self._size = size
         self._body = None
-        self._geometry = None
         self._pasted = True
 
     def pasted(self):
@@ -20,16 +19,18 @@ class Chunk(EventDispatcher):
     def paste(self, value):
         self._pasted = value
 
-    def append_to_world(self, world, space):
+    def append_to_world(self, world):
         pass
 
     def set_camera(self, camera):
         self._camera = camera
 
     def update(self):
-        if self._geometry is not None:
-            x, y, z = self._geometry.getPosition()
-            self._position = (x, y)
+        if self._body is not None:
+            self._position = (
+                self._body.GetCenterPosition().x,
+                self._body.GetCenterPosition().y
+            )
         if self._camera:
             self._camera.set_layer_rect(
                 self._layer, self._position, self._size
@@ -40,12 +41,9 @@ class Chunk(EventDispatcher):
 
     def set_position(self, position):
         self._position = position
-        if self._geometry is not None:
+        if self._body is not None:
             x, y = position
-            self._geometry.setPosition((x, y, -0.5))
-
-    def on_collision(self, world, chunk, contacts, contact_group):
-        return False
+            self._body.SetCenterPosition(x, y)
 
     def fill(self, color):
         self._layer.fill(color)
@@ -61,12 +59,14 @@ class Chunk(EventDispatcher):
 
     def set_x_velocity(self, new_x_velocity):
         if self._body:
-            x_vel, y_vel, z_vel = self._body.getLinearVel()
-            self._body.setLinearVel((new_x_velocity, y_vel, z_vel))
+            velocity = self._body.GetLinearVelocity()
+            velocity.x = new_x_velocity
+            self._body.SetLinearVelocity(velocity)
 
     def set_y_velocity(self, new_y_velocity):
         if self._body:
-            x_vel, y_vel, z_vel = self._body.getLinearVel()
-            self._body.setLinearVel((x_vel, new_y_velocity, z_vel))
+            velocity = self._body.GetLinearVelocity()
+            velocity.y = new_y_velocity
+            self._body.SetLinearVelocity(velocity)
             if new_y_velocity > 0:
                 self.paste(False)

@@ -1,5 +1,8 @@
-import ode
 from bloodyhell.world.camera import Camera
+
+from bloodyhell.box2d.collision.b2aabb import b2AABB
+from bloodyhell.box2d.dynamics.b2world import b2World
+from bloodyhell.box2d.common.math.b2vec2 import b2Vec2
 
 
 class World(object):
@@ -13,36 +16,25 @@ class World(object):
         )
         self._root_layer = root_layer
         self._chunks = []
-        self._ode_world = ode.World()
-        self._ode_world.setGravity(gravity)
-        self._space = ode.Space()
-        self._contact_group = ode.JointGroup()
+        worldAABB = b2AABB()
+        worldAABB.minVertex.Set(-1000, -1000)
+        worldAABB.maxVertex.Set(1000, 1000)
+        gravity_x, gravity_y = gravity
+        gravity = b2Vec2(gravity_x, gravity_y)
+        self._box2d_world = b2World(worldAABB, gravity, True)
 
     def add(self, chunk, slot):
         chunk.set_camera(self._camera)
-        chunk.append_to_world(self._ode_world, self._space)
+        chunk.append_to_world(self._box2d_world)
         self._chunks.append(chunk)
         self._root_layer.addLayer(chunk.layer(), slot)
         self._root_layer.add(chunk)
 
     def step(self, delta):
-        self._space.collide(
-            (self._ode_world, self._contact_group),
-            self._near_callback
-        )
-        self._ode_world.step(delta)
-        self._contact_group.empty()
+        self._box2d_world.Step(delta, 1)
         self._camera.update()
         for chunk in self._chunks:
             chunk.update()
 
     def camera(self):
         return self._camera
-
-    def _near_callback(self, args, geom1, geom2):
-        chunk1 = geom1.chunk
-        chunk2 = geom2.chunk
-        contacts = ode.collide(geom1, geom2)
-        world, contact_group = args
-        if not chunk1.on_collision(world, chunk2, contacts, contact_group):
-            chunk2.on_collision(world, chunk1, contacts, contact_group)

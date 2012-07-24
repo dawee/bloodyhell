@@ -1,5 +1,7 @@
-import ode
 from bloodyhell.world.chunk import Chunk
+
+from bloodyhell.box2d.collision.shapes.b2boxdef import b2BoxDef
+from bloodyhell.box2d.dynamics.b2bodydef import b2BodyDef
 
 
 class Actor(Chunk):
@@ -13,17 +15,21 @@ class Actor(Chunk):
         self.loop(default_animation)
         self._density = density
 
-    def append_to_world(self, world, space):
+    def update(self):
+        super(Actor, self).update()
+
+    def append_to_world(self, world):
         width, height = self._size
-        self._body = ode.Body(world)
-        mass = ode.Mass()
-        mass.setBox(self._density, width, height, width)
-        self._body.setMass(mass)
-        self._geometry = ode.GeomBox(space, lengths=(width, height, 1))
-        self._geometry.setBody(self._body)
         x, y = self._position
-        self._geometry.setPosition((x, y, -0.5))
-        self._geometry.chunk = self
+        box_def = b2BoxDef()
+        box_def.friction = 0.3
+        box_def.restitution = 0.2
+        box_def.density = self._density
+        box_def.extents.Set(width, height)
+        body_def = b2BodyDef()
+        body_def.AddShape(box_def)
+        body_def.position.Set(x, y)
+        self._body = world.CreateBody(body_def)
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))

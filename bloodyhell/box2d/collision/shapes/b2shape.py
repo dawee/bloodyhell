@@ -62,16 +62,16 @@ class b2Shape(object):
         self.m_friction = definition.friction
         self.m_restitution = definition.restitution
         self.m_body = body
-        self.m_proxyId = b2Pair.b2_NoneProxy
+        self.m_proxyId = b2Pair.b2_nullProxy
         self.m_maxRadius = 0.0
         self.m_categoryBits = definition.categoryBits
         self.m_maskBits = definition.maskBits
         self.m_groupIndex = definition.groupIndex
 
     def DestroyProxy(self):
-        if (self.m_proxyId != b2Pair.b2_NoneProxy):
+        if (self.m_proxyId != b2Pair.b2_nullProxy):
             self.m_body.m_world.m_broadPhase.DestroyProxy(self.m_proxyId)
-            self.m_proxyId = b2Pair.b2_NoneProxy
+            self.m_proxyId = b2Pair.b2_nullProxy
 
     def Synchronize(self,position1, R1, position2, R2):
         pass
@@ -97,7 +97,7 @@ class b2Shape(object):
 
     @staticmethod
     def Destroy(shape):
-        if (shape.m_proxyId != b2Pair.b2_NoneProxy):
+        if (shape.m_proxyId != b2Pair.b2_nullProxy):
             shape.m_body.m_world.m_broadPhase.DestroyProxy(shape.m_proxyId)
 
     @staticmethod

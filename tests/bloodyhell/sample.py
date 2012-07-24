@@ -24,13 +24,20 @@ class Aladdin(Actor):
         )
         self.listen_key('right')
         self.listen_key('up')
+        self._walking = False
+
+    def update(self):
+        super(Aladdin, self).update()
+        if self._walking:
+            self.set_x_velocity(6.0)
 
     def on_right_pressed(self):
-        self.set_x_velocity(3.0)
+        self._walking = True
         self.loop('walk')
 
     def on_right_released(self):
-        self.set_x_velocity(0)
+        self._walking = False
+        self.set_x_velocity(0.0)
         self.loop('stance')
 
     def on_up_pressed(self):
@@ -47,10 +54,10 @@ class FirstLevel(Level):
         super(FirstLevel, self).__init__(camera_config={
             'target': (5.0, 3.5),
             'width': 10.0,
-            'rect': Rect((10, 10), (res_width - 20, res_height - 200)),
+            'rect': Rect((10, 10), (res_width - 20, res_height - 20)),
             'limits': {'left': 0.0, 'bottom': 0.0,
                        'right': 70.0, 'top': 10.0}
-        }, gravity=(0, -9.8, 0))
+        }, gravity=(0, -9.8))
         self.listen('quit')
         # Load resources
         self.loader().load_package('sprites')
@@ -64,9 +71,7 @@ class FirstLevel(Level):
         aladdin = Aladdin(position=(0.5, 10.0), size=(1.0, 1.7))
         self.add_chunk(aladdin, self.SPRITES)
         # Create Ground
-        self.add_chunk(Fence((35.0, 0), (70.0, 1.0)), self.PLATFORM)
-
-        self.add_chunk(Fence((10.0, 3.0), (3.0, 1.0)), self.PLATFORM)
+        self.add_chunk(Fence((35.0, -1.5), (70.0, 1.0)), self.PLATFORM)
 
         # Lock camera to Aladdin
         self.world().camera().watch(aladdin)
