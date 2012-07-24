@@ -91,7 +91,7 @@ class b2Shape(object):
         from box2d.collision.shapes.b2polyshape import b2PolyShape
         if definition.type == b2Shape.e_circleShape:
             return b2CircleShape(definition, body, center)
-        if definition.type == b2Shape.e_polyShape:
+        if definition.type in [b2Shape.e_polyShape, b2Shape.e_boxShape]:
             return b2PolyShape(definition, body, center)
         return None
 

@@ -18,9 +18,9 @@
 
 import sys
 import math
-from box2d.common.b2settings import *
-from box2d.common.math import b2Math
-from box2d.common.b2vec2 import b2Vec2
+from box2d.common.b2settings import b2Settings
+from box2d.common.math.b2math import b2Math
+from box2d.common.math.b2vec2 import b2Vec2
 from box2d.collision.clipvertex import ClipVertex
 
 
@@ -37,11 +37,11 @@ class b2Collision(object):
         distance0 = b2Math.b2Dot(normal, vIn[0].v) - offset
         distance1 = b2Math.b2Dot(normal, vIn[1].v) - offset
         if (distance0 <= 0.0):
-            numOut += 1
             vOut[numOut] = vIn[0]
-        if (distance1 <= 0.0):
             numOut += 1
+        if (distance1 <= 0.0):
             vOut[numOut] = vIn[1]
+            numOut += 1
         if (distance0 * distance1 < 0.0):
             interp = distance0 / (distance0 - distance1)
             tVec = vOut[numOut].v
@@ -116,7 +116,6 @@ class b2Collision(object):
         if (sNext > 0.0 and conservative == False):
             return sNext
         bestEdge = 0
-        bestSeparation
         increment = 0
         if (sPrev > s and sPrev > sNext):
             increment = -1
@@ -312,7 +311,7 @@ class b2Collision(object):
                 cp.position.SetV( clipPoints2[i].v )
                 cp.id.Set( clipPoints2[i].id )
                 cp.id.features.flip = flip
-                ++pointCount
+                pointCount += 1
         manifold.pointCount = pointCount
 
     @staticmethod
@@ -324,7 +323,6 @@ class b2Collision(object):
         radiusSum = circle1.m_radius + circle2.m_radius
         if (distSqr > radiusSum * radiusSum and conservative == False):
             return
-        separation
         if (distSqr < 0):
             separation = -radiusSum
             manifold.normal.Set(0.0, 1.0)
@@ -406,7 +404,6 @@ class b2Collision(object):
         tPoint.id.features.incidentVertex = b2Collision.b2_nullFeature
         tPoint.id.features.referenceFace = b2Collision.b2_nullFeature
         tPoint.id.features.flip = 0
-        pX, pY
         if (u <= 0.0):
             pX = poly.m_vertices[vertIndex1].x
             pY = poly.m_vertices[vertIndex1].y

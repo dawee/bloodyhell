@@ -16,17 +16,20 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
-from box2d.collosion.features import Features
 
 
 class b2ContactID(object):
 
-    features = Features()
-    _key = 0
 
     def __init__(self):
+        from box2d.collision.features import Features
         self.features = Features()
         self.features._m_id = self
+        self._key = 0
+
+    @property
+    def key(self):
+        return self._key
 
     def Set(self, id):
         self.set_key(id._key)

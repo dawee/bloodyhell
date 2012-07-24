@@ -23,10 +23,8 @@ from box2d.common.math.b2vec2 import b2Vec2
 
 class b2BoxDef(b2ShapeDef):
 
-    extents = None
-
     def __init__(self):
-        self.type = b2Shape.e_unknownShape
+        self.type = b2Shape.e_boxShape
         self.userData = None
         self.localPosition = b2Vec2(0.0, 0.0)
         self.localRotation = 0.0

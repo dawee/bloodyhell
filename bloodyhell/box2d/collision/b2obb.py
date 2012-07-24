@@ -21,9 +21,6 @@ from box2d.common.math.b2mat22 import b2Mat22
 
 
 class b2OBB(object):
-    R = b2Mat22()
-    center = b2Vec2()
-    extents = b2Vec2()
 
     def __init__(self):
         self.R = b2Mat22()

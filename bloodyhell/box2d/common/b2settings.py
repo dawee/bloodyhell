@@ -46,5 +46,5 @@ class b2Settings(object):
         """
         if not a:
             nullVec
-            nullVec.x++
+            nullVec.x += 1
         """

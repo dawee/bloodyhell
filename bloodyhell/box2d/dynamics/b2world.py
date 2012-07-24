@@ -110,7 +110,7 @@ class b2World(object):
         if (self.m_jointList):
             self.m_jointList.m_prev = j
         self.m_jointList = j
-        ++self.m_jointCount
+        self.m_jointCount += 1
         j.m_node1.joint = j
         j.m_node1.other = j.m_body2
         j.m_node1.prev = None
@@ -209,8 +209,8 @@ class b2World(object):
             island.Clear()
             stackCount = 0
             stack[stackCount] = seed
-            seed.m_flags |= b2Body.e_islandFlag
             stackCount += 1
+            seed.m_flags |= b2Body.e_islandFlag
             while (stackCount > 0):
                 stackCount -= 1
                 b = stack[stackCount]
@@ -248,7 +248,6 @@ class b2World(object):
                     other.m_flags |= b2Body.e_islandFlag
                     jn = jn.next
                     stackCount += 1
-            stackCount += 1
             island.Solve(self.step, self.m_gravity)
             self.m_positionIterationCount = b2Math.b2Max(self.m_positionIterationCount, b2Island.m_positionIterationCount)
             if (self.m_allowSleep):

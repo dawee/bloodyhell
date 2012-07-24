@@ -18,11 +18,11 @@
 
 import math
 
-from box2d.dynamics.b2collision import b2Collision
+from box2d.collision.b2collision import b2Collision
 from box2d.dynamics.contacts.b2contactnode import b2ContactNode
 from box2d.dynamics.contacts.b2contact import b2Contact
 from box2d.common.math.b2math import b2Math
-from box2d.collision.shapes.b2manifold import b2Manifold
+from box2d.collision.b2manifold import b2Manifold
 
 class b2PolyContact(b2Contact):
 

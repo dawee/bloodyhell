@@ -184,7 +184,7 @@ class b2Body(object):
             self.m_mass += massData.mass
             self.m_center.x += massData.mass * (sd.localPosition.x + massData.center.x)
             self.m_center.y += massData.mass * (sd.localPosition.y + massData.center.y)
-            ++self.m_shapeCount
+            self.m_shapeCount += 1
         if (self.m_mass > 0.0):
             self.m_center.Multiply( 1.0 / self.m_mass )
             self.m_position.Add( b2Math.b2MulMV(self.m_R, self.m_center) )

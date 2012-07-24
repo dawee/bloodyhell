@@ -21,9 +21,6 @@ from box2d.common.math.b2vec2 import b2Vec2
 
 class b2AABB(object):
 
-    minVertex = b2Vec2()
-    maxVertex = b2Vec2()
-
     def IsValid(self):
         dX = self.maxVertex.x
         dY = self.maxVertex.y

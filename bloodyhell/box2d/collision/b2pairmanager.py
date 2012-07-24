@@ -23,16 +23,16 @@ from box2d.common.b2settings import b2Settings
 
 class b2PairManager(object):
 
-    m_broadPhase = None
-    m_callback = None
-    m_pairs = None
-    m_freePair = 0
-    m_pairCount = 0
-    m_pairBuffer = None
-    m_pairBufferCount = 0
-    m_hashTable = None
 
     def __init__(self, broadPhase=None, callback=None):
+        self.m_broadPhase = None
+        self.m_callback = None
+        self.m_pairs = None
+        self.m_freePair = 0
+        self.m_pairCount = 0
+        self.m_pairBuffer = None
+        self.m_pairBufferCount = 0
+        self.m_hashTable = None
         if None not in [broadPhase, callback]:
             self.m_broadPhase = broadPhase
             self.m_callback = callback
@@ -145,7 +145,7 @@ class b2PairManager(object):
         pair.userData = None
         pair.next = self.m_hashTable[mHash]
         self.m_hashTable[mHash] = pIndex
-        ++self.m_pairCount
+        self.m_pairCount += 1
         return pair
 
     def RemovePair(self,proxyId1, proxyId2):
@@ -171,7 +171,7 @@ class b2PairManager(object):
                 pair.userData = None
                 pair.status = 0
                 self.m_freePair = index
-                --self.m_pairCount
+                self.m_pairCount -= 1
                 return userData
             else:
                 pNode = self.m_pairs[node]
@@ -211,8 +211,10 @@ class b2PairManager(object):
         key = key ^ ((key >> 16) & 0x0000ffff)
         return key
 
+    @staticmethod
     def Equals(pair, proxyId1, proxyId2):
         return (pair.proxyId1 == proxyId1 and pair.proxyId2 == proxyId2)
 
+    @staticmethod
     def EqualsPair(pair1, pair2):
         return pair1.proxyId1 == pair2.proxyId1 and pair1.proxyId2 == pair2.proxyId2

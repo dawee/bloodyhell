@@ -19,13 +19,13 @@
 
 class Features(object):
 
-    _referenceFace = 0
-    _incidentEdge = 0
-    _incidentVertex = 0
-    _flip = 0
-    _m_id = None
 
     def set_referenceFace(self, value):
+        self._referenceFace = 0
+        self._incidentEdge = 0
+        self._incidentVertex = 0
+        self._flip = 0
+        self._m_id = None
         self._referenceFace = value
         self._m_id._key = (self._m_id._key & 0xffffff00) | (self._referenceFace & 0x000000ff)
 

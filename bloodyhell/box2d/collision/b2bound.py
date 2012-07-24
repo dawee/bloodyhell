@@ -19,9 +19,10 @@
 
 class b2Bound(object):
 
-    value = 0
-    proxyId = 0
-    stabbingCount = 0
+    def __init__(self):
+        self.value = 0
+        self.proxyId = 0
+        self.stabbingCount = 0
 
     def IsLower(self):
         return (self.value & 1) == 0

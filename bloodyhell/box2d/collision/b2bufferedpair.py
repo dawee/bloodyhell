@@ -18,6 +18,8 @@
 
 
 class b2BufferedPair(object):
-    proxyId1 = 0
-    proxyId2 = 0
+
+    def __init__(self):
+        self.proxyId1 = 0
+        self.proxyId2 = 0
 

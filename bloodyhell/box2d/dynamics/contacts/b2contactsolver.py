@@ -31,7 +31,7 @@ class b2ContactSolver(object):
         for i in range(contactCount):
             self.m_constraintCount += contacts[i].GetManifoldCount()
         for i in range(self.m_constraintCount):
-            self.m_constraints[i] = b2ContactConstraint()
+            self.m_constraints.append(b2ContactConstraint())
         count = 0
         for i in range(contactCount):
             contact = contacts[i]
@@ -100,7 +100,7 @@ class b2ContactSolver(object):
                     vRel = c.normal.x*tX + c.normal.y*tY
                     if (vRel < -b2Settings.b2_velocityThreshold):
                         ccp.velocityBias += -c.restitution * vRel
-                ++count
+                count += 1
 
     def PreSolve(self):
         for i in range(self.m_constraintCount):

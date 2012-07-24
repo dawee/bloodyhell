@@ -21,11 +21,10 @@ from box2d.collision.b2contactid import b2ContactID
 
 
 class b2ContactPoint(object):
-    position = b2Vec2()
-    separation = None
-    normalImpulse = None
-    tangentImpulse = None
 
     def __init__(self):
         self.position = b2Vec2()
         self.id = b2ContactID()
+        self.separation = None
+        self.normalImpulse = None
+        self.tangentImpulse = None

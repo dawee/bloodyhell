@@ -16,19 +16,18 @@
 * 3. This notice may not be removed or altered from any source distribution.
 """
 
-from box2d.common.b2settings import *
+from box2d.common.b2settings import b2Settings
 from box2d.collision.b2contactpoint import b2ContactPoint
 from box2d.common.math.b2vec2 import b2Vec2
 
 
 class b2Manifold(object):
 
-    points = null
-    normal = null
-    pointCount = 0
 
     def __init__(self):
+        self.normal = None
         self.points = range(b2Settings.b2_maxManifoldPoints)
         for i in range(b2Settings.b2_maxManifoldPoints):
             self.points[i] = b2ContactPoint()
+        self.pointCount = 0
         self.normal = b2Vec2()

@@ -19,5 +19,6 @@
 
 class b2BoundValues(object):
 
-    lowerValues = [0, 0]
-    upperValues = [0, 0]
+    def __init__(self):
+        self.lowerValues = [0, 0]
+        self.upperValues = [0, 0]

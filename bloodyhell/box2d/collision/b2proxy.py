@@ -20,11 +20,12 @@ from box2d.collision.b2broadphase import b2BroadPhase
 
 class b2Proxy(object):
 
-    lowerBounds = [0, 0]
-    upperBounds = [0, 0]
-    overlapCount = 0
-    timeStamp = 0
-    userData = None
+    def __init__(self):
+        self.lowerBounds = [0, 0]
+        self.upperBounds = [0, 0]
+        self.overlapCount = 0
+        self.timeStamp = 0
+        self.userData = None
 
     def GetNext(self):
         return self.lowerBounds[0]

@@ -36,20 +36,10 @@ class b2BroadPhase(object):
     s_validate = False
     b2_invalid = b2Settings.USHRT_MAX
     b2_nullEdge = b2Settings.USHRT_MAX
-    m_pairManager = b2PairManager()
-    m_proxyPool = range(b2Settings.b2_maxPairs)
-    m_freeProxy = 0
-    m_bounds = range(2 * b2Settings.b2_maxProxies)
-    m_queryResults = range(b2Settings.b2_maxProxies)
-    m_queryResultCount = 0
-    m_worldAABB = None
-    m_quantizationFactor = b2Vec2()
-    m_proxyCount = 0
-    m_timeStamp = 0
 
     def __init__(self, worldAABB, callback):
         self.m_pairManager = b2PairManager()
-        self.m_proxyPool = range(b2Settings.b2_maxPairs)
+        self.m_proxyPool = []
         self.m_bounds = range(2*b2Settings.b2_maxProxies)
         self.m_queryResults = range(b2Settings.b2_maxProxies)
         self.m_quantizationFactor = b2Vec2()
@@ -59,11 +49,12 @@ class b2BroadPhase(object):
         self.m_proxyCount = 0
         for i in range(b2Settings.b2_maxProxies):
             self.m_queryResults[i] = 0
-        self.m_bounds = range(2)
+        self.m_bounds = []
         for i in range(2):
-            self.m_bounds[i] = range(2*b2Settings.b2_maxProxies)
-        for j in range(2*b2Settings.b2_maxProxies):
-            self.m_bounds[i][j] = b2Bound()
+            bound_list = []
+            for j in range(2 * b2Settings.b2_maxProxies):
+                bound_list.append(b2Bound())
+            self.m_bounds.append(bound_list)
         dX = worldAABB.maxVertex.x
         dY = worldAABB.maxVertex.y
         dX -= worldAABB.minVertex.x
@@ -71,19 +62,19 @@ class b2BroadPhase(object):
         self.m_quantizationFactor.x = b2Settings.USHRT_MAX / dX
         self.m_quantizationFactor.y = b2Settings.USHRT_MAX / dY
         from box2d.collision.b2proxy import b2Proxy
-        for i in range(b2Settings.b2_maxProxies-1):
+        for i in range(b2Settings.b2_maxProxies):
             tProxy = b2Proxy()
-            self.m_proxyPool[i] = tProxy
             tProxy.SetNext(i + 1)
             tProxy.timeStamp = 0
             tProxy.overlapCount = b2BroadPhase.b2_invalid
             tProxy.userData = None
+            self.m_proxyPool.append(tProxy)
         tProxy = b2Proxy()
-        self.m_proxyPool[b2Settings.b2_maxProxies-1] = tProxy
         tProxy.SetNext(b2Pair.b2_nullProxy)
         tProxy.timeStamp = 0
         tProxy.overlapCount = b2BroadPhase.b2_invalid
         tProxy.userData = None
+        self.m_proxyPool.append(tProxy)
         self.m_freeProxy = 0
         self.m_timeStamp = 1
         self.m_queryResultCount = 0
@@ -114,9 +105,7 @@ class b2BroadPhase(object):
         proxy.overlapCount = 0
         proxy.userData = userData
         boundCount = 2 * self.m_proxyCount
-        lowerValues = range()
-        upperValues = range()
-        self.ComputeBounds(lowerValues, upperValues, aabb)
+        lowerValues, upperValues = self.ComputeBounds(aabb)
         for axis in range(2):
             bounds = self.m_bounds[axis]
             lowerIndex = 0
@@ -126,34 +115,34 @@ class b2BroadPhase(object):
             self.Query(lowerIndexOut, upperIndexOut, lowerValues[axis], upperValues[axis], bounds, boundCount, axis)
             lowerIndex = lowerIndexOut[0]
             upperIndex = upperIndexOut[0]
-            tArr = range()
             j = 0
             tEnd = boundCount - upperIndex
+            tArr = []
             for j in range(tEnd):
-                tArr[j] = b2Bound()
-                tBound1 = tArr[j]
+                tBound1 = b2Bound()
                 tBound2 = bounds[upperIndex+j]
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tEnd = tArr.length
-            tIndex = upperIndex+2
+                tArr.append(tBound1)
+            tEnd = len(tArr)
+            tIndex = upperIndex + 2
             for j in range(tEnd):
                 tBound2 = tArr[j]
                 tBound1 = bounds[tIndex+j]
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tArr = range()
             tEnd = upperIndex - lowerIndex
+            tArr = []
             for j in range(tEnd):
-                tArr[j] = b2Bound()
-                tBound1 = tArr[j]
+                tBound1 = b2Bound()
                 tBound2 = bounds[lowerIndex+j]
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tEnd = tArr.length
+                tArr.append(tBound1)
+            tEnd = len(tArr)
             tIndex = lowerIndex+1
             for j in range(tEnd):
                 tBound2 = tArr[j]
@@ -193,9 +182,9 @@ class b2BroadPhase(object):
             upperIndex = proxy.upperBounds[axis]
             lowerValue = bounds[lowerIndex].value
             upperValue = bounds[upperIndex].value
-            tArr = range()
             j = 0
             tEnd = upperIndex - lowerIndex - 1
+            tArr = range(tEnd)
             for j in range(tEnd):
                 tArr[j] = b2Bound()
                 tBound1 = tArr[j]
@@ -203,7 +192,7 @@ class b2BroadPhase(object):
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tEnd = tArr.length
+            tEnd = len(tArr)
             tIndex = lowerIndex
             for j in range(tEnd):
                 tBound2 = tArr[j]
@@ -211,7 +200,7 @@ class b2BroadPhase(object):
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tArr = range()
+            tArr = range(boundCount)
             tEnd = boundCount - upperIndex - 1
             for j in range(tEnd):
                 tArr[j] = b2Bound()
@@ -220,7 +209,7 @@ class b2BroadPhase(object):
                 tBound1.value = tBound2.value
                 tBound1.proxyId = tBound2.proxyId
                 tBound1.stabbingCount = tBound2.stabbingCount
-            tEnd = tArr.length
+            tEnd = len(tArr)
             tIndex = upperIndex-1
             for j in range(tEnd):
                 tBound2 = tArr[j]
@@ -265,7 +254,7 @@ class b2BroadPhase(object):
         boundCount = 2 * self.m_proxyCount
         proxy = self.m_proxyPool[ proxyId ]
         newValues = b2BoundValues()
-        self.ComputeBounds(newValues.lowerValues, newValues.upperValues, aabb)
+        newValues.lowerValues, newValues.upperValues = self.ComputeBounds(aabb)
         oldValues = b2BoundValues()
         for axis in range(2):
             oldValues.lowerValues[axis] = self.m_bounds[axis][proxy.lowerBounds[axis]].value
@@ -361,9 +350,7 @@ class b2BroadPhase(object):
         self.m_pairManager.Commit()
 
     def QueryAABB(self,aabb, userData, maxCount):
-        lowerValues = range()
-        upperValues = range()
-        self.ComputeBounds(lowerValues, upperValues, aabb)
+        lowerValues, upperValues = self.ComputeBounds(aabb)
         lowerIndex = 0
         upperIndex = 0
         lowerIndexOut = [lowerIndex]
@@ -390,7 +377,7 @@ class b2BroadPhase(object):
                 else:
                     stabbingCount -= 1
 
-    def ComputeBounds(self,lowerValues, upperValues, aabb):
+    def ComputeBounds(self, aabb):
         minVertexX = aabb.minVertex.x
         minVertexY = aabb.minVertex.y
         minVertexX = b2Math.b2Min(minVertexX, self.m_worldAABB.maxVertex.x)
@@ -403,10 +390,13 @@ class b2BroadPhase(object):
         maxVertexY = b2Math.b2Min(maxVertexY, self.m_worldAABB.maxVertex.y)
         maxVertexX = b2Math.b2Max(maxVertexX, self.m_worldAABB.minVertex.x)
         maxVertexY = b2Math.b2Max(maxVertexY, self.m_worldAABB.minVertex.y)
-        lowerValues[0] = """uint"""(self.m_quantizationFactor.x * (minVertexX - self.m_worldAABB.minVertex.x)) & (b2Settings.USHRT_MAX - 1)
-        upperValues[0] = ("""uint"""(self.m_quantizationFactor.x * (maxVertexX - self.m_worldAABB.minVertex.x))& 0x0000ffff) | 1
-        lowerValues[1] = """uint"""(self.m_quantizationFactor.y * (minVertexY - self.m_worldAABB.minVertex.y)) & (b2Settings.USHRT_MAX - 1)
-        upperValues[1] = ("""uint"""(self.m_quantizationFactor.y * (maxVertexY - self.m_worldAABB.minVertex.y))& 0x0000ffff) | 1
+        lowerValues = range(3)
+        upperValues = range(3)
+        lowerValues[0] = int(self.m_quantizationFactor.x * (minVertexX - self.m_worldAABB.minVertex.x)) & (b2Settings.USHRT_MAX - 1)
+        upperValues[0] = (int(self.m_quantizationFactor.x * (maxVertexX - self.m_worldAABB.minVertex.x))& 0x0000ffff) | 1
+        lowerValues[1] = int(self.m_quantizationFactor.y * (minVertexY - self.m_worldAABB.minVertex.y)) & (b2Settings.USHRT_MAX - 1)
+        upperValues[1] = (int(self.m_quantizationFactor.y * (maxVertexY - self.m_worldAABB.minVertex.y))& 0x0000ffff) | 1
+        return lowerValues, upperValues
 
     def TestOverlapValidate(self,p1, p2):
         for axis in range(2):
@@ -435,7 +425,7 @@ class b2BroadPhase(object):
         if (lowerQuery > 0):
             i = lowerQuery - 1
             s = bounds[i].stabbingCount
-            while (s):
+            while (s > 0 and i > 0):
                 if (bounds[i].IsLower()):
                     proxy = self.m_proxyPool[ bounds[i].proxyId ]
                     if (lowerQuery <= proxy.upperBounds[axis]):
@@ -455,7 +445,8 @@ class b2BroadPhase(object):
             self.m_queryResults[self.m_queryResultCount] = proxyId
             self.m_queryResultCount += 1
 
-    def BinarySearch(self, bounds, count, value):
+    @staticmethod
+    def BinarySearch(bounds, count, value):
         low = 0
         high = count - 1
         while (low <= high):
