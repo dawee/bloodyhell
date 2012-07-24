@@ -11,7 +11,6 @@ Depends on:
 -----------
 
 * pygame (SDL wrapper)
-* Open Dynamics Engine
 
 
 *No docs for the moment, take a look a the sample*
