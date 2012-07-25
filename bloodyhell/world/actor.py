@@ -22,8 +22,8 @@ class Actor(Chunk):
         width, height = self._size
         x, y = self._position
         box_def = b2BoxDef()
-        box_def.friction = 0.3
-        box_def.restitution = 0.2
+        box_def.friction = 0
+        box_def.restitution = 1.0
         box_def.density = self._density
         box_def.extents.Set(width, height)
         body_def = b2BodyDef()

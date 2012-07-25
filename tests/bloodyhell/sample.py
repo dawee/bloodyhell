@@ -13,7 +13,7 @@ from bloodyhell.world.decoration import Decoration
 from bloodyhell.world.fence import Fence
 
 
-RESOLUTION = (400, 300)
+RESOLUTION = (800, 600)
 
 
 class Aladdin(Actor):
@@ -29,7 +29,6 @@ class Aladdin(Actor):
     def update(self):
         super(Aladdin, self).update()
         if self._walking:
-            self._body.WakeUp()
             self.set_x_velocity(6.0)
 
     def on_right_pressed(self):
@@ -42,7 +41,7 @@ class Aladdin(Actor):
         self.loop('stance')
 
     def on_up_pressed(self):
-        self.set_y_velocity(4.0)
+        self.set_y_velocity(6.0)
 
     def on_up_released(self):
         pass

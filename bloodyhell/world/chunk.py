@@ -59,12 +59,14 @@ class Chunk(EventDispatcher):
 
     def set_x_velocity(self, new_x_velocity):
         if self._body:
+            self._body.WakeUp()
             velocity = self._body.GetLinearVelocity()
             velocity.x = new_x_velocity
             self._body.SetLinearVelocity(velocity)
 
     def set_y_velocity(self, new_y_velocity):
         if self._body:
+            self._body.WakeUp()
             velocity = self._body.GetLinearVelocity()
             velocity.y = new_y_velocity
             self._body.SetLinearVelocity(velocity)
