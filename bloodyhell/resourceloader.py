@@ -60,17 +60,28 @@ class ResourceLoader(object):
 
     def get_resource(self, full_resource_id, rect, cropped_rect):
         package_name, resource_id = full_resource_id.split('.', 1)
-        surface = self._resources[package_name][resource_id]
-        cropped_surface = surface.subsurface(Rect(
-            cropped_rect.x * surface.get_width() / rect.width,
-            cropped_rect.y * surface.get_height() / rect.height,
-            cropped_rect.width * surface.get_width() / rect.width,
-            cropped_rect.height * surface.get_height() / rect.height
-        ))
-        return pygame.transform.scale(
-            cropped_surface,
-            (cropped_rect.width, cropped_rect.height)
+        sub_surface_str = '%s_%s_%s_%s_%s_%s_%s_%s_%s' % (
+            resource_id,
+            cropped_rect.x, cropped_rect.y,
+            cropped_rect.width, cropped_rect.height,
+            rect.x, rect.y,
+            rect.width, rect.height,
         )
+        if sub_surface_str not in self._resources[package_name]:
+            surface = self._resources[package_name][resource_id]
+            cropped_surface = surface.subsurface(Rect(
+                cropped_rect.x * surface.get_width() / rect.width,
+                cropped_rect.y * surface.get_height() / rect.height,
+                cropped_rect.width * surface.get_width() / rect.width,
+                cropped_rect.height * surface.get_height() / rect.height
+            ))
+            self._resources[package_name][
+                sub_surface_str
+            ] = pygame.transform.scale(
+                cropped_surface,
+                (cropped_rect.width, cropped_rect.height)
+            )
+        return self._resources[package_name][sub_surface_str]
 
     def get_animation_frames(self, full_resource_id_base):
         package_name, resource_id_base = full_resource_id_base.split('.', 1)
