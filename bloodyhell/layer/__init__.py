@@ -17,7 +17,7 @@ class Layer(EventDispatcher):
         self._slots = {}
         self._image_id = None
 
-    def addLayer(self, layer, slot=0):
+    def add_layer(self, layer, slot=0):
         if not slot in self._slots:
             self._slots[slot] = []
         layer.set_parent(self)
@@ -68,3 +68,4 @@ class Layer(EventDispatcher):
             int(hexcolor[2:4], 16),
             int(hexcolor[4:6], 16),
         ))
+        return self

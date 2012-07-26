@@ -28,8 +28,8 @@ class Chunk(EventDispatcher):
     def update(self):
         if self._body is not None:
             self._position = (
-                self._body.GetCenterPosition().x,
-                self._body.GetCenterPosition().y
+                self._body.GetPosition().x,
+                self._body.GetPosition().y
             )
         if self._camera:
             self._camera.set_layer_rect(

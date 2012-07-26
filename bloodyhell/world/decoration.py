@@ -1,4 +1,5 @@
 from bloodyhell.world.chunk import Chunk
+import re
 
 
 class Decoration(Chunk):

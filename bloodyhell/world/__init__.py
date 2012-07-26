@@ -1,8 +1,8 @@
 from bloodyhell.world.camera import Camera
 
-from bloodyhell.box2d.collision.b2aabb import b2AABB
-from bloodyhell.box2d.dynamics.b2world import b2World
-from bloodyhell.box2d.common.math.b2vec2 import b2Vec2
+from Box2D import b2AABB
+from Box2D import b2World
+from Box2D import b2Vec2
 
 
 class World(object):
@@ -17,8 +17,8 @@ class World(object):
         self._root_layer = root_layer
         self._chunks = []
         worldAABB = b2AABB()
-        worldAABB.minVertex.Set(-1000, -1000)
-        worldAABB.maxVertex.Set(1000, 1000)
+        worldAABB.lowerBound = (-1000, -1000)
+        worldAABB.upperBound = (1000, 1000)
         gravity_x, gravity_y = gravity
         gravity = b2Vec2(gravity_x, gravity_y)
         self._box2d_world = b2World(worldAABB, gravity, True)
@@ -27,11 +27,11 @@ class World(object):
         chunk.set_camera(self._camera)
         chunk.append_to_world(self._box2d_world)
         self._chunks.append(chunk)
-        self._root_layer.addLayer(chunk.layer(), slot)
+        self._root_layer.add_layer(chunk.layer(), slot)
         self._root_layer.add(chunk)
 
     def step(self, delta):
-        self._box2d_world.Step(delta, 1)
+        self._box2d_world.Step(delta, 8, 10)
         self._camera.update()
         for chunk in self._chunks:
             chunk.update()

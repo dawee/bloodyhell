@@ -17,7 +17,7 @@ class Navigator(EventDispatcher):
         self.add(self._root)
 
     def set_current_view(self, view):
-        self._root.addLayer(view)
+        self._root.add_layer(view)
         self._current_view = view
         self._current_view.set_navigator(self)
 

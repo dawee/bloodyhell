@@ -1,7 +1,8 @@
 from bloodyhell.world.chunk import Chunk
 
-from bloodyhell.box2d.collision.shapes.b2boxdef import b2BoxDef
-from bloodyhell.box2d.dynamics.b2bodydef import b2BodyDef
+
+from Box2D import b2PolygonDef
+from Box2D import b2BodyDef
 
 
 class Actor(Chunk):
@@ -21,15 +22,15 @@ class Actor(Chunk):
     def append_to_world(self, world):
         width, height = self._size
         x, y = self._position
-        box_def = b2BoxDef()
-        box_def.friction = 0
-        box_def.restitution = 1.0
-        box_def.density = self._density
-        box_def.extents.Set(width, height)
+        box = b2PolygonDef()
+        box.SetAsBox(width / 2, height / 2)
+        box.density = self._density
+        box.friction = 0.3
         body_def = b2BodyDef()
-        body_def.AddShape(box_def)
         body_def.position.Set(x, y)
         self._body = world.CreateBody(body_def)
+        self._body.CreateShape(box)
+        self._body.SetMassFromShapes()
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))
