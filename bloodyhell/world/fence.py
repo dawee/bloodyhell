@@ -1,6 +1,7 @@
 from bloodyhell.world.chunk import Chunk
 
 from Box2D import b2PolygonDef
+from Box2D import b2EdgeChainDef
 from Box2D import b2BodyDef
 
 
@@ -23,10 +24,12 @@ class Fence(Chunk):
         x, y = self._position
         box = b2PolygonDef()
         box.SetAsBox(width / 2, height / 2)
+
         body_def = b2BodyDef()
         body_def.position.Set(x, y)
         self._body = world.CreateBody(body_def)
-        self._body.CreateShape(box)
+        #self._body.CreateShape(box)
+
 
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))

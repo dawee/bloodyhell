@@ -20,12 +20,15 @@ class Actor(Chunk):
         super(Actor, self).update()
 
     def append_to_world(self, world):
+        self.world = world
         width, height = self._size
         x, y = self._position
         box = b2PolygonDef()
         box.SetAsBox(width / 2, height / 2)
         box.density = self._density
         box.friction = 0.3
+        box.angle = 0
+        box.restitution = 0.2
         body_def = b2BodyDef()
         body_def.position.Set(x, y)
         self._body = world.CreateBody(body_def)
