@@ -84,6 +84,7 @@ class FirstLevel(Level):
 
         # Lock camera to Mario
         self.world().camera().watch(mario)
+        self.loader().play_sound('platform.music.samba')
 
     def on_quit(self, event):
         sys.exit()

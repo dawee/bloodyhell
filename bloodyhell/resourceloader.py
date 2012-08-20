@@ -15,6 +15,13 @@ class ResourceLoader(object):
 
     _instance = None
 
+    TYPES = {
+        '.png': 'add_image_resource',
+        '.jpg': 'add_image_resource',
+        '.jpeg': 'add_image_resource',
+        '.wav': 'add_sound_resource',
+    }
+
     def __new__(self):
         if self._instance is None:
             self._instance = object.__new__(self)
@@ -44,9 +51,17 @@ class ResourceLoader(object):
                     os.path.relpath(dir_name, package_path),
                     os.path.splitext(file_name)[0]
                 ).replace(os.path.sep, '.')
-                self._resources[
-                    package_name
-                ][resource_id] = pygame.image.load(file_path)
+                extension = os.path.splitext(file_name)[1]
+                if extension in self.TYPES:
+                    getattr(self, self.TYPES[extension])(
+                        package_name, resource_id, file_path
+                    )
+
+    def add_image_resource(self, package, identity, file_path):
+        self._resources[package][identity] = pygame.image.load(file_path)
+
+    def add_sound_resource(self, package, identity, file_path):
+        self._resources[package][identity] = pygame.mixer.Sound(file_path)
 
     def load_package(self, package_name):
         if self._resources_folder is None:
@@ -82,6 +97,11 @@ class ResourceLoader(object):
                 (cropped_rect.width, cropped_rect.height)
             )
         return self._resources[package_name][sub_surface_str]
+
+    def play_sound(self, full_resource_id):
+        package_name, resource_id = full_resource_id.split('.', 1)
+        sound = self._resources[package_name][resource_id]
+        sound.play()
 
     def get_animation_frames(self, full_resource_id_base):
         package_name, resource_id_base = full_resource_id_base.split('.', 1)
