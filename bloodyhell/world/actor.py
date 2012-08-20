@@ -16,9 +16,6 @@ class Actor(Chunk):
         self.loop(default_animation)
         self._density = density
 
-    def update(self):
-        super(Actor, self).update()
-
     def append_to_world(self, world):
         self.world = world
         width, height = self._size
@@ -26,10 +23,11 @@ class Actor(Chunk):
         box = b2PolygonDef()
         box.SetAsBox(width / 2, height / 2)
         box.density = self._density
-        box.friction = 0.3
+        box.friction = 0
         box.angle = 0
-        box.restitution = 0.2
+        box.restitution = 0
         body_def = b2BodyDef()
+        body_def.fixedRotation = True
         body_def.position.Set(x, y)
         self._body = world.CreateBody(body_def)
         self._body.CreateShape(box)

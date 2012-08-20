@@ -10,9 +10,9 @@ from bloodyhell.level import Level
 from bloodyhell.layer.rect import Rect
 from bloodyhell.layer import Layer
 from bloodyhell.world.actor import Actor
-from bloodyhell.world.decoration import Decoration
 from bloodyhell.world.fence import Fence
 
+from Box2D import b2Vec2
 
 RESOLUTION = (800, 600)
 FPS = 25
@@ -25,25 +25,24 @@ class Mario(Actor):
             'platform.sprites.mario', 'stance', position, size
         )
         self.listen_key('right')
+        self.listen_key('left')
         self.listen_key('up')
-        self._walking = False
-
-    def update(self):
-        super(Mario, self).update()
-        if self._walking:
-            self.set_x_velocity(6.0)
 
     def on_right_pressed(self):
-        self._walking = True
-        #self.loop('walk')
+        self._body.ApplyImpulse(b2Vec2(1000, 0), self._body.GetWorldCenter())
 
     def on_right_released(self):
-        self._walking = False
         self.set_x_velocity(0.0)
-        #self.loop('stance')
+
+    def on_left_pressed(self):
+        self._body.ApplyImpulse(b2Vec2(-1000, 0), self._body.GetWorldCenter())
+        #self.loop('walk')
+
+    def on_left_released(self):
+        self.set_x_velocity(0.0)
 
     def on_up_pressed(self):
-        self.set_y_velocity(6.0)
+        self._body.ApplyImpulse(b2Vec2(0, 4000), self._body.GetWorldCenter())
 
     def on_up_released(self):
         pass
@@ -72,7 +71,7 @@ class FirstLevel(Level):
             for j in range(10):
                 self.add_chunk(
                     Fence(
-                        (0.25 + j + i * 0.49, 2.0 + j),
+                        (0.25 + j * 2 + i * 0.49, 2.0 + j),
                         (0.5, 0.5),
                         'platform.static.brick'
                     ),
@@ -80,7 +79,7 @@ class FirstLevel(Level):
                 )
 
         # Create Actor (mario)
-        mario = Mario(position=(2.0, 4.0), size=(0.5, 1.0))
+        mario = Mario(position=(1.5, 4.0), size=(0.5, 1.0))
         self.add_chunk(mario, self.SPRITES)
 
         # Lock camera to Mario

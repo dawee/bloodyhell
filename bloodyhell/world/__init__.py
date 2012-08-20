@@ -31,7 +31,7 @@ class World(object):
         self._root_layer.add(chunk)
 
     def step(self, delta):
-        self._box2d_world.Step(delta, 8, 10)
+        self._box2d_world.Step(delta, 8, 1)
         self._camera.update()
         for chunk in self._chunks:
             chunk.update()
