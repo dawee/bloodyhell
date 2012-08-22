@@ -3,6 +3,7 @@ import time
 
 from bloodyhell.view.navigator import Navigator
 from bloodyhell.resourceloader import ResourceLoader
+from bloodyhell.widget import Widget
 
 
 class Game(object):
@@ -16,6 +17,7 @@ class Game(object):
         ResourceLoader().set_resources_folder(resources_folder)
         pygame.init()
         self._window = pygame.display.set_mode(resolution)
+        Widget.set_resolution(resolution)
         pygame.display.set_caption(name)
         self._frames_delta = 1.0 / fps
         self._navigator = Navigator()

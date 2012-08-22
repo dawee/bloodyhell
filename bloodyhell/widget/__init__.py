@@ -14,12 +14,26 @@ class Widget(Layer):
         'undefined': re.compile('^(\-*[0-9]+)$'),
     }
 
-    def __init__(self, style=None):
+    def __init__(self, style=None, attributes=None):
         super(Widget, self).__init__()
         self._style = {} if style is None else style
+        self._attributes = {} if attributes is None else attributes
+        self._allowed_attributes = []
 
-    def style(self, property, value):
-        self._style[property] = value
+    def style(self, property, value=None):
+        if value:
+            self._style[property] = value
+        else:
+            return self._style[property]
+
+    def attr(self, property, value=None):
+        if value:
+            self._attributes[property] = value
+        else:
+            return self._attributes[property]
+
+    def get_allowed_attributes(self):
+        return self._allowed_attributes
 
     def read_value(self, raw_value):
         for name, pattern in Widget.PATTERNS.items():
@@ -127,3 +141,7 @@ class Widget(Layer):
     @staticmethod
     def set_resolution(resolution):
         Widget._screen_width, Widget._screen_height = resolution
+
+    @staticmethod
+    def get_resolution():
+        return (Widget._screen_width, Widget._screen_height)

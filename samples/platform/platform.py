@@ -11,7 +11,7 @@ from bloodyhell.layer.rect import Rect
 from bloodyhell.layer import Layer
 from bloodyhell.world.actor import Actor
 from bloodyhell.world.fence import Fence
-from bloodyhell.widget import Widget
+from bloodyhell.widget.interface import Interface
 
 from Box2D import b2Vec2
 
@@ -86,16 +86,7 @@ class FirstLevel(Level):
         self.world().camera().watch(mario)
         #self.loader().play_sound('platform.music.samba')
 
-        interface = Layer(position=(0, 0), size=RESOLUTION)
-        interface.set_transparent(True)
-        interface.add_layer(Widget({
-            'right': '0',
-            'top': '0',
-            'width': '15%',
-            'height': 'auto',
-            'background-image': 'platform.static.heart'
-        }), 0)
-        self.add_layer(interface, 100)
+        self.add_layer(Interface('interface.xml'), 100)
 
     def on_quit(self, event):
         sys.exit()
