@@ -13,7 +13,6 @@ from bloodyhell.world.actor import Actor
 from bloodyhell.world.fence import Fence
 from bloodyhell.widget.interface import Interface
 
-from Box2D import b2Vec2
 
 RESOLUTION = (800, 600)
 FPS = 25
@@ -28,28 +27,31 @@ class Mario(Actor):
         self.listen_key('right')
         self.listen_key('left')
         self.listen_key('up')
+        self._pasted = False
 
     def on_right_pressed(self):
-        self._body.ApplyImpulse(b2Vec2(1000, 0), self._body.GetWorldCenter())
+        self.set_x_velocity(3.0)
 
     def on_right_released(self):
-        self.set_x_velocity(0.0)
+        if self._pasted:
+            self.set_x_velocity(0.0)
 
     def on_left_pressed(self):
-        self._body.ApplyImpulse(b2Vec2(-1000, 0), self._body.GetWorldCenter())
-        #self.loop('walk')
+        self.set_x_velocity(-3.0)
 
     def on_left_released(self):
-        self.set_x_velocity(0.0)
+        if self._pasted:
+            self.set_x_velocity(0.0)
 
     def on_up_pressed(self):
-        self._body.ApplyImpulse(b2Vec2(0, 4000), self._body.GetWorldCenter())
+        self._pasted = False
+        self.set_y_velocity(6.0)
 
     def on_up_released(self):
         pass
 
     def on_collision(self, chunk, point):
-        print 'Mario collides with', chunk.__class__.__name__
+        self._pasted = True
 
 
 class FirstLevel(Level):
