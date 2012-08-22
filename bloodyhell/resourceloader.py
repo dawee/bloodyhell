@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import pygame
 
 from bloodyhell.layer.rect import Rect
@@ -61,7 +62,10 @@ class ResourceLoader(object):
         self._resources[package][identity] = pygame.image.load(file_path)
 
     def add_sound_resource(self, package, identity, file_path):
-        self._resources[package][identity] = pygame.mixer.Sound(file_path)
+        try:
+            self._resources[package][identity] = pygame.mixer.Sound(file_path)
+        except:
+            sys.stderr.write('Failed to load sound !\n')
 
     def load_package(self, package_name):
         if self._resources_folder is None:
@@ -97,6 +101,10 @@ class ResourceLoader(object):
                 (cropped_rect.width, cropped_rect.height)
             )
         return self._resources[package_name][sub_surface_str]
+
+    def get_raw_resource(self, full_resource_id):
+        package_name, resource_id = full_resource_id.split('.', 1)
+        return self._resources[package_name][resource_id]
 
     def play_sound(self, full_resource_id):
         package_name, resource_id = full_resource_id.split('.', 1)

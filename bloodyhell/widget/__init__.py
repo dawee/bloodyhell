@@ -1,5 +1,6 @@
 import re
 from bloodyhell.layer import Layer
+from bloodyhell.layer.rect import Rect
 
 
 class Widget(Layer):
@@ -15,7 +16,7 @@ class Widget(Layer):
 
     def __init__(self, style=None):
         super(Widget, self).__init__()
-        self._style = {}
+        self._style = {} if style is None else style
 
     def style(self, property, value):
         self._style[property] = value
@@ -24,7 +25,8 @@ class Widget(Layer):
         for name, pattern in Widget.PATTERNS.items():
             result = pattern.match(raw_value)
             if result:
-                return (name, result.group(1))
+                return (name, float(result.group(1)))
+        return (None, 0)
 
     def _update_size(self):
         if 'width' in self._style:
@@ -96,12 +98,32 @@ class Widget(Layer):
             else:
                 self._rect.bottom = parent_value - value
 
+    def _update_ratio(self, surface):
+        if self._style.get('height', None) == 'auto':
+            self._rect.height = \
+                self._rect.width * surface.get_height() / surface.get_width()
+        elif self._style.get('width', None) == 'auto':
+            self._rect.width = \
+                self._rect.height * surface.get_width() / surface.get_height()
+
+    def _update_background(self):
+        if 'background-color' in self._style:
+            self.fill(self._style['background-color'])
+        if 'background-image' in self._style:
+            self.set_image(self._style['background-image'])
+            surface = self.loader().get_raw_resource(
+                self._style['background-image']
+            )
+            self._update_ratio(surface)
+
     def on_frame(self, delta):
         self._update_size()
         self._update_x_position()
         self._update_y_position()
+        self._update_background()
+        self._cropped_rect = Rect((0, 0), (self._rect.width, self._rect.height))
         super(Widget, self).on_frame(delta)
 
     @staticmethod
-    def set_resolution(self, resolution):
+    def set_resolution(resolution):
         Widget._screen_width, Widget._screen_height = resolution

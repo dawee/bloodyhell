@@ -11,6 +11,7 @@ from bloodyhell.layer.rect import Rect
 from bloodyhell.layer import Layer
 from bloodyhell.world.actor import Actor
 from bloodyhell.world.fence import Fence
+from bloodyhell.widget import Widget
 
 from Box2D import b2Vec2
 
@@ -77,14 +78,24 @@ class FirstLevel(Level):
                     ),
                     self.PLATFORM
                 )
-
         # Create Actor (mario)
         mario = Mario(position=(1.5, 4.0), size=(0.5, 1.0))
         self.add_chunk(mario, self.SPRITES)
 
         # Lock camera to Mario
         self.world().camera().watch(mario)
-        self.loader().play_sound('platform.music.samba')
+        #self.loader().play_sound('platform.music.samba')
+
+        interface = Layer(position=(0, 0), size=RESOLUTION)
+        interface.set_transparent(True)
+        interface.add_layer(Widget({
+            'right': '0',
+            'top': '0',
+            'width': '15%',
+            'height': 'auto',
+            'background-image': 'platform.static.heart'
+        }), 0)
+        self.add_layer(interface, 100)
 
     def on_quit(self, event):
         sys.exit()

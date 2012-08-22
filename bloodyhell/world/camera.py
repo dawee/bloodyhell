@@ -4,7 +4,6 @@ from bloodyhell.layer.rect import Rect
 class Camera(object):
 
     def __init__(self, target, width, rect, limits):
-        print width
         self._rect = rect
         self._target = target
         self._width = width

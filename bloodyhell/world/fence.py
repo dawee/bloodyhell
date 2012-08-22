@@ -18,13 +18,6 @@ class Fence(Chunk):
             else:
                 self._layer.set_image(resource_id)
 
-    def update(self):
-        super(Fence, self).update()
-        """
-        if self._body.GetAngle() < -1 or self._body.GetAngle() > 1:
-            print self._body.GetAngle()
-        """
-
     def append_to_world(self, world):
         width, height = self._size
         x, y = self._position

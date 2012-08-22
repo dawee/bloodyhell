@@ -16,6 +16,13 @@ class Layer(EventDispatcher):
         self._cropped_rect = Rect((0, 0), size)
         self._slots = {}
         self._image_id = None
+        self._transparent = False
+
+    def set_transparent(self, transparent):
+        self._transparent = transparent
+
+    def loader(self):
+        return ResourceLoader()
 
     def add_layer(self, layer, slot=0):
         if not slot in self._slots:
@@ -47,7 +54,8 @@ class Layer(EventDispatcher):
                 )
 
     def on_frame(self, delta):
-        self.blit()
+        if not self._transparent:
+            self.blit()
         for slot in self._slots.keys():
             for layer in self._slots[slot]:
                 layer.on_frame(delta)
