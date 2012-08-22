@@ -22,8 +22,15 @@ class Chunk(EventDispatcher):
     def append_to_world(self, world):
         pass
 
+    def set_user_data(self):
+        if self._body is not None:
+            self._body.userData = self
+
     def set_camera(self, camera):
         self._camera = camera
+
+    def on_collision(self, chunk, point):
+        pass
 
     def update(self):
         if self._body is not None:

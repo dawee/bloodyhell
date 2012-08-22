@@ -48,6 +48,9 @@ class Mario(Actor):
     def on_up_released(self):
         pass
 
+    def on_collision(self, chunk, point):
+        print 'Mario collides with', chunk.__class__.__name__
+
 
 class FirstLevel(Level):
 
