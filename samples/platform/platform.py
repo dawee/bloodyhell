@@ -28,24 +28,33 @@ class Mario(Actor):
         self.listen_key('left')
         self.listen_key('up')
         self._pasted = False
+        self._walking = None
+
+    def update(self):
+        super(Mario, self).update()
+        if self._walking is not None:
+            self.set_x_velocity(self._walking)
+        else:
+            self.set_x_velocity(0)
 
     def on_right_pressed(self):
-        self.set_x_velocity(3.0)
+        self._walking = 3.0
 
     def on_right_released(self):
         if self._pasted:
-            self.set_x_velocity(0.0)
+            self._walking = None
 
     def on_left_pressed(self):
-        self.set_x_velocity(-3.0)
+        self._walking = -3.0
 
     def on_left_released(self):
         if self._pasted:
-            self.set_x_velocity(0.0)
+            self._walking = None
 
     def on_up_pressed(self):
-        self._pasted = False
-        self.set_y_velocity(6.0)
+        if self._pasted:
+            self._pasted = False
+            self.set_y_velocity(6.0)
 
     def on_up_released(self):
         pass
