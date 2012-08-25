@@ -1,3 +1,4 @@
 <interface>
     <section style="right: 0;top: 0;width: 15%;height: auto; background-image: platform.static.heart" />
+    <label text="Mario Dude" style="left: 0%;top: 0%;width: 15%;height: 10%; font-size: 30;color: #00dd00" />
 </interface>

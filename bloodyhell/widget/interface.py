@@ -1,12 +1,14 @@
 from xml.dom.minidom import parse
 from bloodyhell.layer import Layer
 from bloodyhell.widget import Widget
+from bloodyhell.widget.label import Label
 
 
 class Interface(Layer):
 
     NODES = {
         'section': Widget,
+        'label': Label
     }
 
     def __init__(self, path):
@@ -31,7 +33,8 @@ class Interface(Layer):
         if tag_name in Interface.NODES:
             widget = Interface.NODES[node.tagName]()
             for attr_name in widget.get_allowed_attributes():
-                widget.attr(node.getAttribute(attr_name))
+                print attr_name
+                widget.attr(attr_name, node.getAttribute(attr_name))
             raw_style = node.getAttribute('style')
             for definition in raw_style.split(';'):
                 if definition.find(':') != -1:
