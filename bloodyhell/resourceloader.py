@@ -49,7 +49,6 @@ class ResourceLoader(object):
         package_path = os.path.abspath(
             os.path.join(self._resources_folder, package_name)
         )
-        print package_path
         for file_name in file_names:
             file_path = os.path.abspath(os.path.join(dir_name, file_name))
             if os.path.isfile(file_path):
@@ -79,7 +78,6 @@ class ResourceLoader(object):
             sys.stderr.write('Failed to load sound !\n')
 
     def add_json_resource(self, package, identity, file_path):
-        print 'add json:', package, identity
         self._resources[package][identity] = json.load(open(file_path))
 
     def load_package(self, package_name):
@@ -137,3 +135,8 @@ class ResourceLoader(object):
                     int(regex_object.group(1))
                 ] = '%s.%s' % (package_name, resource_id)
         return frames
+
+    def get_width_from_ratio(self, resource_id, height):
+        surface = self.get_raw_resource(resource_id)
+        image_width = surface.get_width() * height / surface.get_height()
+        return (image_width, height)
