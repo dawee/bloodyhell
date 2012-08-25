@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import pygame
+import json
 
 from bloodyhell.layer.rect import Rect
 
@@ -21,6 +22,7 @@ class ResourceLoader(object):
         '.jpg': 'add_image_resource',
         '.jpeg': 'add_image_resource',
         '.wav': 'add_sound_resource',
+        '.json': 'add_json_resource'
     }
 
     def __new__(self):
@@ -66,6 +68,9 @@ class ResourceLoader(object):
             self._resources[package][identity] = pygame.mixer.Sound(file_path)
         except:
             sys.stderr.write('Failed to load sound !\n')
+
+    def add_json_resource(self, package, identity, file_path):
+        self._resources[package][identity] = json.load(file_path)
 
     def load_package(self, package_name):
         if self._resources_folder is None:
