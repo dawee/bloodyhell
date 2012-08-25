@@ -1,7 +1,6 @@
 import pygame
 
 from bloodyhell.eventdispatcher import EventDispatcher
-from bloodyhell.resourceloader import ResourceLoader
 from bloodyhell.layer.rect import Rect
 
 
@@ -22,6 +21,7 @@ class Layer(EventDispatcher):
         self._transparent = transparent
 
     def loader(self):
+        from bloodyhell.resourceloader import ResourceLoader
         return ResourceLoader()
 
     def add_layer(self, layer, slot=0):
