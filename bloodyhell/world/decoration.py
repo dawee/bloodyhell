@@ -8,5 +8,5 @@ class Decoration(Chunk):
         self.layer().set_image(image_id)
 
     def contains(self, chunk):
-        return chunk._rect.contains(chunk._rect)
+        return chunk.layer()._rect.contains(chunk.layer()._rect)
 
