@@ -1,5 +1,6 @@
 from bloodyhell.layer.animatedlayer import AnimatedLayer
 from bloodyhell.eventdispatcher import EventDispatcher
+from bloodyhell.layer.rect import Rect
 
 
 class Chunk(EventDispatcher):
@@ -12,6 +13,13 @@ class Chunk(EventDispatcher):
         self._size = size
         self._body = None
         self._pasted = True
+        self._hitbox = Rect(0, 0, 0, 0)
+
+    def set_hitbox(self, hitbox):
+        self._hitbox.left = hitbox.get('left', self._hitbox.left)
+        self._hitbox.top = hitbox.get('top', self._hitbox.top)
+        self._hitbox.bottom = hitbox.get('bottom', self._hitbox.bottom)
+        self._hitbox.right = hitbox.get('right', self._hitbox.right)
 
     def pasted(self):
         return self._pasted
@@ -79,3 +87,4 @@ class Chunk(EventDispatcher):
             self._body.SetLinearVelocity(velocity)
             if new_y_velocity > 0:
                 self.paste(False)
+
