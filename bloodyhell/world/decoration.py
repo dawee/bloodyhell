@@ -1,5 +1,4 @@
 from bloodyhell.world.chunk import Chunk
-import re
 
 
 class Decoration(Chunk):
@@ -7,3 +6,7 @@ class Decoration(Chunk):
     def __init__(self, position, size, image_id):
         super(Decoration, self).__init__(position, size)
         self.layer().set_image(image_id)
+
+    def contains(self, chunk):
+        return chunk._rect.contains(chunk._rect)
+

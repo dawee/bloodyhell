@@ -23,7 +23,6 @@ class Fence(Chunk):
         x, y = self._position
         box = b2PolygonDef()
         box.SetAsBox(width / 2, height / 2)
-
         body_def = b2BodyDef()
         body_def.position.Set(x, y)
         self._body = world.CreateBody(body_def)
