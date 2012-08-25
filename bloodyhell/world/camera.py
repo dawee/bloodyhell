@@ -10,6 +10,8 @@ class Camera(object):
         self._height = (self._width * self._rect.height) / self._rect.width
         self._limits = limits
         self._actor_to_watch = None
+        self._actor_top_offset = 0
+        self._actor_left_offset = 0
 
     def set_layer_rect(self, layer, world_position, world_size):
         world_width, world_height = world_size
@@ -68,14 +70,16 @@ class Camera(object):
     def target(self):
         return self._target
 
-    def watch(self, actor):
+    def watch(self, actor, top_offset=0, left_offset=0):
         self._actor_to_watch = actor
+        self._actor_top_offset = top_offset
+        self._actor_left_offset = left_offset
 
     def update(self):
         if self._actor_to_watch is not None:
             actor_x, actor_y = self._actor_to_watch.position()
             actor_width, actor_height = self._actor_to_watch.size()
             self.set_target((
-                actor_x + (actor_width / 2),
-                actor_y + (actor_height / 2),
+                actor_x + (actor_width / 2) + self._actor_left_offset,
+                actor_y + (actor_height / 2) + self._actor_top_offset,
             ))
