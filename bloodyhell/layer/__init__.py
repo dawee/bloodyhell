@@ -40,6 +40,7 @@ class Layer(EventDispatcher):
     def blit(self):
         if self._cropped_rect is not None:
             if self._image_id is not None:
+                from bloodyhell.resourceloader import ResourceLoader
                 self._surface = ResourceLoader().get_resource(
                     self._image_id, self._rect, self._cropped_rect
                 )
