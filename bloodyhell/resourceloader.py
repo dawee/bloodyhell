@@ -46,14 +46,23 @@ class ResourceLoader(object):
         self._resources_folder = folder
 
     def browse_folder(self, package_name, dir_name, file_names):
-        package_path = os.path.join(self._resources_folder, package_name)
+        package_path = os.path.abspath(
+            os.path.join(self._resources_folder, package_name)
+        )
+        print package_path
         for file_name in file_names:
             file_path = os.path.abspath(os.path.join(dir_name, file_name))
             if os.path.isfile(file_path):
-                resource_id = os.path.join(
-                    os.path.relpath(dir_name, package_path),
-                    os.path.splitext(file_name)[0]
-                ).replace(os.path.sep, '.')
+                if os.path.abspath(dir_name) == package_path:
+                    resource_id = os.path.splitext(file_name)[0]
+                else:
+                    resource_id = os.path.join(
+                        os.path.relpath(
+                            os.path.abspath(dir_name),
+                            package_path
+                        ),
+                        os.path.splitext(file_name)[0]
+                    ).replace(os.path.sep, '.')
                 extension = os.path.splitext(file_name)[1]
                 if extension in self.TYPES:
                     getattr(self, self.TYPES[extension])(
@@ -70,7 +79,8 @@ class ResourceLoader(object):
             sys.stderr.write('Failed to load sound !\n')
 
     def add_json_resource(self, package, identity, file_path):
-        self._resources[package][identity] = json.load(file_path)
+        print 'add json:', package, identity
+        self._resources[package][identity] = json.load(open(file_path))
 
     def load_package(self, package_name):
         if self._resources_folder is None:
