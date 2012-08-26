@@ -35,6 +35,14 @@ class World(object):
         self._contact_listener = ContactListener()
         self._box2d_world.SetContactListener(self._contact_listener)
 
+    def remove(self, chunk):
+        if chunk._body:
+            chunk._body.userData = None
+            self._box2d_world.DestroyBody(chunk._body)
+            chunk._body = None
+        self._root_layer.remove(chunk)
+        self._root_layer.remove_layer(chunk.layer())
+
     def add(self, chunk, slot):
         chunk.set_camera(self._camera)
         chunk.append_to_world(self._box2d_world)

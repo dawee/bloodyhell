@@ -31,3 +31,9 @@ class Level(View):
 
     def world(self):
         return self._world
+
+    def remove_chunk(self, chunk):
+        self.remove(chunk)
+        self._world.remove(chunk)
+
+

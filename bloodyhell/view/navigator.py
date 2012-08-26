@@ -15,9 +15,19 @@ class Navigator(EventDispatcher):
             self._screen.get_width(), self._screen.get_height()
         ))
         self.add(self._root)
+        self._stack = []
 
     def current_view(self):
         return self._current_view
+
+    def push(self, view):
+        if self._current_view:
+            self._stack.append(self._current_view)
+        self.set_current_view(view)
+
+    def pop(self):
+        if len(self._stack):
+            self.set_current_view(self._stack.pop())
 
     def set_current_view(self, view):
         if self._current_view:
