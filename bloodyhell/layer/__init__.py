@@ -31,6 +31,15 @@ class Layer(EventDispatcher):
         self._slots[slot].append(layer)
         self.add(layer)
 
+    def remove_layer(self, layer_to_remove):
+        for slot in self._slots.keys():
+            for layer in self._slots[slot]:
+                index = 0
+                if layer is layer_to_remove:
+                    self._slots[slot].pop(index)
+                index += 1
+        self.remove(layer_to_remove)
+
     def set_parent(self, parent):
         self._parent = parent
 

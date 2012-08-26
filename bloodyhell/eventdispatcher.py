@@ -14,6 +14,9 @@ class EventDispatcher(object):
     def add(self, dispatcher):
         self._sub_dispatchers.append(dispatcher)
 
+    def remove(self, dispatcher):
+        self._sub_dispatchers.pop(self._sub_dispatchers.index(dispatcher))
+
     def listen(self, event_name):
         self._callbacks[getattr(pygame, event_name.upper())] = getattr(
             self, 'on_%s' % event_name
