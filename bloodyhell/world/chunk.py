@@ -88,3 +88,5 @@ class Chunk(EventDispatcher):
             if new_y_velocity > 0:
                 self.paste(False)
 
+    def get_y_velocity(self):
+        return self._body.GetLinearVelocity().y
