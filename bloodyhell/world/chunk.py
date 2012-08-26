@@ -69,6 +69,9 @@ class Chunk(EventDispatcher):
     def size(self):
         return self._size
 
+    def hitbox(self):
+        return self._hitbox
+
     def body(self):
         return self._body
 
@@ -90,3 +93,25 @@ class Chunk(EventDispatcher):
 
     def get_y_velocity(self):
         return self._body.GetLinearVelocity().y
+
+    def contains(self, chunk):
+        chunk_x, chunk_y = chunk.position()
+        chunk_width, chunk_height = chunk.size()
+        self_x, self_y = self._position
+        self_width, self_height = self._size
+
+        self_x += (self._hitbox.left * self_width) / 100
+        self_y += (self._hitbox.top * self_height) / 100
+        self_width -= 2 * self_x
+        self_height -= 2 * self_y
+
+        chunk_x += (chunk.hitbox().left * chunk_width) / 100
+        chunk_y += (chunk.hitbox().top * chunk_height) / 100
+        chunk_width -= 2 * chunk_x
+        chunk_height -= 2 * chunk_y
+
+        if chunk_x >= self_x and chunk_x <= self_x + self_width / 2 \
+            and chunk_y >= self_y and chunk_y <= self_y + self_height / 2:
+                return True
+        else:
+            return False
