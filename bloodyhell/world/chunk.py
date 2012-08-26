@@ -100,18 +100,19 @@ class Chunk(EventDispatcher):
         self_x, self_y = self._position
         self_width, self_height = self._size
 
-        self_x += (self._hitbox.left * self_width) / 100
-        self_y += (self._hitbox.top * self_height) / 100
-        self_width -= 2 * self_x
-        self_height -= 2 * self_y
+        self_width -= 2 * (self._hitbox.left * self_width) / 100
+        self_height -= 2 * (self._hitbox.top * self_height) / 100
+
+        self_left = self_x - self_width / 2
+        self_top = self_y + self_height / 2
 
         chunk_x += (chunk.hitbox().left * chunk_width) / 100
         chunk_y += (chunk.hitbox().top * chunk_height) / 100
         chunk_width -= 2 * chunk_x
         chunk_height -= 2 * chunk_y
 
-        if chunk_x >= self_x and chunk_x <= self_x + self_width / 2 \
-            and chunk_y >= self_y and chunk_y <= self_y + self_height / 2:
+        if chunk_x >= self_left and chunk_x <= self_left + self_width \
+            and chunk_y <= self_top and chunk_y >= self_top - self_height:
                 return True
         else:
             return False
