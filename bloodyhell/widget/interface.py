@@ -20,9 +20,13 @@ class Interface(Layer):
         self.set_transparent(True)
         self._dom = parse(path)
         self._index = 0
+        self._ids = {}
         self._root = self._dom.getElementsByTagName('interface')[0]
         for node in self._root.childNodes:
             self._build_node(node, None)
+
+    def get(self, id):
+        return self._ids[id]
 
     def _build_node(self, node, parent_widget):
         tag_name = None
@@ -32,8 +36,9 @@ class Interface(Layer):
             pass
         if tag_name in Interface.NODES:
             widget = Interface.NODES[node.tagName]()
+            if node.getAttribute('id'):
+                self._ids[node.getAttribute('id')] = widget
             for attr_name in widget.get_allowed_attributes():
-                print attr_name
                 widget.attr(attr_name, node.getAttribute(attr_name))
             raw_style = node.getAttribute('style')
             for definition in raw_style.split(';'):
