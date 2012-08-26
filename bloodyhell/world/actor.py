@@ -22,7 +22,8 @@ class Actor(Chunk):
         x, y = self._position
         box = b2PolygonDef()
         hitbox_width = (self._hitbox.left * width / 100) * 2
-        box.SetAsBox((width / 2) - hitbox_width, (height / 2))
+        hitbox_height = (self._hitbox.top * height / 100) * 2
+        box.SetAsBox((width / 2) - hitbox_width, (height / 2) - hitbox_height)
         box.density = self._density
         box.friction = 0
         box.angle = 0
