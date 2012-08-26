@@ -16,6 +16,9 @@ class Navigator(EventDispatcher):
         ))
         self.add(self._root)
 
+    def current_view(self):
+        return self._current_view
+
     def set_current_view(self, view):
         if self._current_view:
             self._root.remove_layer(self._current_view)
