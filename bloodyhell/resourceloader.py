@@ -10,12 +10,10 @@ from xml.dom.minidom import parse
 
 from bloodyhell.layer.rect import Rect
 
-
 class ResourcesFolderMissing(Exception):
     """
     Raised if no resources folder has been set
     """
-
 
 class ResourceLoader(object):
 
@@ -26,7 +24,7 @@ class ResourceLoader(object):
         '.png': 'add_image_resource',
         '.jpg': 'add_image_resource',
         '.jpeg': 'add_image_resource',
-        '.wav': 'add_sound_resource',
+        '.mp3': 'add_sound_resource',
         '.json': 'add_json_resource',
         '.xml': 'add_xml_resource'
     }

@@ -64,7 +64,7 @@ class Chunk(EventDispatcher):
         self._position = position
         if self._body is not None:
             x, y = position
-            self._body.SetCenterPosition(x, y)
+            # self._body.SetPosition(x, y)
 
     def fill(self, color):
         self._layer.fill(color)
