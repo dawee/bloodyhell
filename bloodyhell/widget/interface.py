@@ -1,7 +1,7 @@
-from xml.dom.minidom import parse
 from bloodyhell.layer import Layer
 from bloodyhell.widget import Widget
 from bloodyhell.widget.label import Label
+from bloodyhell.resourceloader import ResourceLoader
 
 
 class Interface(Layer):
@@ -18,7 +18,7 @@ class Interface(Layer):
             size=Widget.get_resolution()
         )
         self.set_transparent(True)
-        self._dom = parse(path)
+        self._dom = ResourceLoader().get_raw_resource(path)
         self._index = 0
         self._ids = {}
         self._root = self._dom.getElementsByTagName('interface')[0]

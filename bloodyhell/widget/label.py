@@ -8,7 +8,7 @@ class Label(Widget):
         return ['text']
 
     def blit(self):
-        self._font = pygame.font.Font(None, int(self.style('font-size')))
+        self._font = pygame.font.Font('DroidSansMono.ttf', int(self.style('font-size')))
         self._surface = self._font.render(
             self.attr('text'), True, self.get_color(self.style('color'))
         )

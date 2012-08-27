@@ -3,6 +3,10 @@ import re
 import sys
 import pygame
 import json
+import tempfile
+import uuid
+import zipfile
+from xml.dom.minidom import parse
 
 from bloodyhell.layer.rect import Rect
 
@@ -15,6 +19,7 @@ class ResourcesFolderMissing(Exception):
 
 class ResourceLoader(object):
 
+    TMP_DIR = '.bhtmp'
     _instance = None
 
     TYPES = {
@@ -22,7 +27,8 @@ class ResourceLoader(object):
         '.jpg': 'add_image_resource',
         '.jpeg': 'add_image_resource',
         '.wav': 'add_sound_resource',
-        '.json': 'add_json_resource'
+        '.json': 'add_json_resource',
+        '.xml': 'add_xml_resource'
     }
 
     def __new__(self):
@@ -34,6 +40,7 @@ class ResourceLoader(object):
     def _initialize(self):
         self._resources_folder = None
         self._resources = {}
+        self._parent_package_path = ''
         self._screen = None
 
     def set_screen(self, screen):
@@ -47,7 +54,7 @@ class ResourceLoader(object):
 
     def browse_folder(self, package_name, dir_name, file_names):
         package_path = os.path.abspath(
-            os.path.join(self._resources_folder, package_name)
+            os.path.join(self._parent_package_path, package_name)
         )
         for file_name in file_names:
             file_path = os.path.abspath(os.path.join(dir_name, file_name))
@@ -80,15 +87,25 @@ class ResourceLoader(object):
     def add_json_resource(self, package, identity, file_path):
         self._resources[package][identity] = json.load(open(file_path))
 
-    def load_package(self, package_name):
+    def add_xml_resource(self, package, identity, file_path):
+        self._resources[package][identity] = parse(file_path)
+
+    def load_folder_package(self, package_name):
         if self._resources_folder is None:
             raise ResourcesFolderMissing(
                 'Resources folder has not been set'
             )
         if not package_name in self._resources:
             self._resources[package_name] = {}
+        self._parent_package_path = self._resources_folder
         package_path = os.path.join(self._resources_folder, package_name)
         os.path.walk(package_path, self.browse_folder, package_name)
+
+    def load_package(self, package_name):
+        if not hasattr(sys, 'frozen'):
+            self.load_folder_package(package_name)
+        else:
+            self.load_archive_package(package_name)
 
     def get_resource(self, full_resource_id, rect, cropped_rect):
         package_name, resource_id = full_resource_id.split('.', 1)
@@ -140,3 +157,28 @@ class ResourceLoader(object):
         surface = self.get_raw_resource(resource_id)
         image_width = surface.get_width() * height / surface.get_height()
         return (image_width, height)
+
+    def load_archive_package(self, package_name):
+        if self._resources_folder is None:
+            raise ResourcesFolderMissing(
+                'Resources folder has not been set'
+            )
+        if not package_name in self._resources:
+            self._resources[package_name] = {}
+        tmp_path = os.path.abspath(os.path.join(
+            tempfile.gettempdir(),
+            self.TMP_DIR,
+            str(uuid.uuid1())
+        ))
+        package_path = os.path.join(tmp_path, package_name)
+        try:
+            os.makedirs(package_path)
+        except:
+            pass
+        dat_file = zipfile.ZipFile(os.path.join(
+            self._resources_folder,
+            package_name + '.dat'
+        ))
+        dat_file.extractall(package_path)
+        self._parent_package_path = tmp_path
+        os.path.walk(package_path, self.browse_folder, package_name)

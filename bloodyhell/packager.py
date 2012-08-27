@@ -6,6 +6,10 @@ from zipfile import ZipFile
 class Packager(object):
 
     def __init__(self, resources_path, output_path):
+        try:
+            os.makedirs(output_path)
+        except:
+            pass
         self._resources_path = os.path.abspath(resources_path)
         self._output_path = os.path.abspath(output_path)
 
