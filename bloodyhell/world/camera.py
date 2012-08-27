@@ -12,6 +12,22 @@ class Camera(object):
         self._actor_to_watch = None
         self._actor_top_offset = 0
         self._actor_left_offset = 0
+        self._y_high_filter_threshold = 1.0
+        self._width_low_filter = 0.2
+        self._required_width = width
+
+    def set_y_high_filter_threshold(self, threshold):
+        self._y_high_filter_threshold = threshold
+
+    def update_width(self):
+        old_width = self._width
+        value_diff = self._required_width - old_width
+        value_diff *= self._width_low_filter
+        self._width = old_width + value_diff
+        self._height = (self._width * self._rect.height) / self._rect.width
+
+    def set_width(self, width):
+        self._required_width = width
 
     def set_layer_rect(self, layer, world_position, world_size):
         world_width, world_height = world_size
@@ -65,7 +81,17 @@ class Camera(object):
         )
 
     def set_target(self, target):
-        self._target = target
+        target_x, target_y = target
+        old_x, old_y = self._target
+        value_diff = target_y - old_y
+        if value_diff == 0:
+            high_filter = 1.0
+        else:
+            high_filter = abs(value_diff) / self._y_high_filter_threshold
+        value_diff *= high_filter
+        if abs(value_diff * high_filter) < abs(value_diff):
+            target_y = old_y + value_diff
+        self._target = (target_x, target_y)
 
     def target(self):
         return self._target
@@ -79,7 +105,9 @@ class Camera(object):
         if self._actor_to_watch is not None:
             actor_x, actor_y = self._actor_to_watch.position()
             actor_width, actor_height = self._actor_to_watch.size()
+            target_y = actor_y + self._actor_left_offset
             self.set_target((
-                actor_x + (actor_width / 2) + self._actor_left_offset,
-                actor_y + (actor_height / 2) + self._actor_top_offset,
+                actor_x + self._actor_left_offset,
+                target_y,
             ))
+        self.update_width()

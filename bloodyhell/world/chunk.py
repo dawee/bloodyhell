@@ -21,6 +21,12 @@ class Chunk(EventDispatcher):
         self._hitbox.bottom = hitbox.get('bottom', self._hitbox.bottom)
         self._hitbox.right = hitbox.get('right', self._hitbox.right)
 
+    def real_size(self):
+        width, height = self.size()
+        width -= 2 * (self._hitbox.left * width) / 100
+        height -= 2 * (self._hitbox.top * height) / 100
+        return (width, height)
+
     def pasted(self):
         return self._pasted
 
