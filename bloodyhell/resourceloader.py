@@ -42,6 +42,7 @@ class ResourceLoader(object):
         self._resources = {}
         self._parent_package_path = ''
         self._screen = None
+        self._sub_surfaces_ids = []
 
     def set_screen(self, screen):
         self._screen = screen
@@ -107,6 +108,13 @@ class ResourceLoader(object):
         else:
             self.load_archive_package(package_name)
 
+    def clean_lazy(self):
+        for sub_str in self._sub_surfaces_ids:
+            package_name, resource_id = sub_str.split('.', 1)
+            self._resources[package_name][resource_id] = None
+            del self._resources[package_name][resource_id]
+        self._sub_surfaces_ids = []
+
     def get_resource(self, full_resource_id, rect, cropped_rect):
         package_name, resource_id = full_resource_id.split('.', 1)
         sub_surface_str = '%s_%s_%s_%s_%s_%s_%s_%s_%s' % (
@@ -116,6 +124,7 @@ class ResourceLoader(object):
             rect.x, rect.y,
             rect.width, rect.height,
         )
+        self._sub_surfaces_ids.append('%s.%s' % (package_name, sub_surface_str))
         if sub_surface_str not in self._resources[package_name]:
             surface = self._resources[package_name][resource_id]
             cropped_surface = surface.subsurface(Rect(

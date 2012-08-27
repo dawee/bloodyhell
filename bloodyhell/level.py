@@ -19,6 +19,7 @@ class Level(View):
 
     def __init__(self, camera_config, gravity):
         super(Level, self).__init__()
+        self.loader().clean_lazy()
         self._world = World(self, camera_config, gravity)
 
     def add_chunk(self, chunk, slot):
