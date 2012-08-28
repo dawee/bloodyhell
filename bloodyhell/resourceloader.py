@@ -24,7 +24,7 @@ class ResourceLoader(object):
         '.png': 'add_image_resource',
         '.jpg': 'add_image_resource',
         '.jpeg': 'add_image_resource',
-        '.mp3': 'add_sound_resource',
+        '.wav': 'add_sound_resource',
         '.json': 'add_json_resource',
         '.xml': 'add_xml_resource'
     }

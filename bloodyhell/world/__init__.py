@@ -59,6 +59,7 @@ class World(object):
     def step(self, delta):
         for chunk in self._remove_list:
             self._remove(chunk)
+        self._remove_list = []
         self._box2d_world.Step(delta, 8, 1)
         self._camera.update()
         for chunk in self._chunks:
