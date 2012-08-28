@@ -12,7 +12,6 @@ class Interface(Layer):
     }
 
     def __init__(self, path):
-        print Widget.get_resolution()
         super(Interface, self).__init__(
             position=(0, 0),
             size=Widget.get_resolution()

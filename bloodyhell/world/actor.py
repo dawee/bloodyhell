@@ -34,6 +34,6 @@ class Actor(Chunk):
         self._body = world.CreateBody(body_def)
         self._body.CreateShape(box)
         self._body.SetMassFromShapes()
-    
+
     def loop(self, animation):
         self._layer.set_animation('%s.%s' % (self._resource_id, animation))

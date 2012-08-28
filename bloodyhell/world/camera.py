@@ -48,16 +48,6 @@ class Camera(object):
             cropped_rect = Rect(
                 0, 0, layer.rect().width, layer.rect().height
             )
-            if layer.rect().x < self._rect.x:
-                cropped_rect.x = self._rect.x - layer.rect().x
-                cropped_rect.width -= cropped_rect.x
-            if layer.rect().right > self._rect.right:
-                cropped_rect.width -= (layer.rect().right - self._rect.right)
-            if layer.rect().y < self._rect.y:
-                cropped_rect.y = self._rect.y - layer.rect().y
-                cropped_rect.height -= cropped_rect.y
-            if layer.rect().bottom > self._rect.bottom:
-                cropped_rect.height -= (layer.rect().bottom - self._rect.bottom)
             layer.set_cropped_rect(cropped_rect)
 
     def _get_layer_point(self, world_point):

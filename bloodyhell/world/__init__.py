@@ -11,8 +11,9 @@ class ContactListener(b2ContactListener):
     def Add(self, point):
         chunk1 = point.shape1.GetBody().userData
         chunk2 = point.shape2.GetBody().userData
-        if not chunk1.on_collision(chunk2, point):
-            chunk2.on_collision(chunk1, point)
+        if hasattr(chunk1, 'on_collision') and hasattr(chunk2, 'on_collision'):
+            if not chunk1.on_collision(chunk2, point):
+                chunk2.on_collision(chunk1, point)
 
 
 class World(object):
@@ -34,12 +35,16 @@ class World(object):
         self._box2d_world = b2World(worldAABB, gravity, True)
         self._contact_listener = ContactListener()
         self._box2d_world.SetContactListener(self._contact_listener)
+        self._remove_list = []
 
-    def remove(self, chunk):
+    def _remove(self, chunk):
         if chunk._body:
             chunk._body.userData = None
             self._box2d_world.DestroyBody(chunk._body)
             chunk._body = None
+
+    def remove(self, chunk):
+        self._remove_list.append(chunk)
         self._root_layer.remove(chunk)
         self._root_layer.remove_layer(chunk.layer())
 
@@ -52,6 +57,8 @@ class World(object):
         self._root_layer.add(chunk)
 
     def step(self, delta):
+        for chunk in self._remove_list:
+            self._remove(chunk)
         self._box2d_world.Step(delta, 8, 1)
         self._camera.update()
         for chunk in self._chunks:

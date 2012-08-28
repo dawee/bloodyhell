@@ -14,6 +14,13 @@ class Chunk(EventDispatcher):
         self._body = None
         self._pasted = True
         self._hitbox = Rect(0, 0, 0, 0)
+        self._active = False
+
+    def is_active(self):
+        return self._active
+
+    def set_active(self, state):
+        self._active = state
 
     def set_hitbox(self, hitbox):
         self._hitbox.left = hitbox.get('left', self._hitbox.left)
@@ -62,9 +69,6 @@ class Chunk(EventDispatcher):
 
     def set_position(self, position):
         self._position = position
-        if self._body is not None:
-            x, y = position
-            # self._body.SetPosition(x, y)
 
     def fill(self, color):
         self._layer.fill(color)
@@ -98,7 +102,9 @@ class Chunk(EventDispatcher):
                 self.paste(False)
 
     def get_y_velocity(self):
-        return self._body.GetLinearVelocity().y
+        if self._body:
+            return self._body.GetLinearVelocity().y
+        return 0
 
     def contains(self, chunk):
         chunk_x, chunk_y = chunk.position()
