@@ -1,4 +1,3 @@
-import pygame
 
 
 class EventDispatcher(object):
@@ -22,15 +21,10 @@ class EventDispatcher(object):
             index += 1
 
     def listen(self, event_name):
-        self._callbacks[getattr(pygame, event_name.upper())] = getattr(
-            self, 'on_%s' % event_name
-        )
+        pass
 
     def listen_key(self, key_name):
-        self._keys_callbacks[getattr(pygame, 'K_%s' % key_name.upper())] = {
-            'down': getattr(self, 'on_%s_pressed' % key_name.lower()),
-            'up': getattr(self, 'on_%s_released' % key_name.lower()),
-        }
+        pass
 
     def on_frame(self, delta):
         for dispatcher in self._sub_dispatchers:

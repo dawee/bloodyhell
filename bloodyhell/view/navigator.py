@@ -1,5 +1,3 @@
-import pygame
-
 from bloodyhell.eventdispatcher import EventDispatcher
 from bloodyhell.layer import Layer
 
@@ -10,9 +8,10 @@ class Navigator(EventDispatcher):
 
     def __init__(self):
         super(Navigator, self).__init__()
-        self._screen = pygame.display.get_surface()
+        screen_width = 1 # TO CHANGE
+        screen_height = 1 # TO CHANGE
         self._root = Layer(None, (0, 0), (
-            self._screen.get_width(), self._screen.get_height()
+            screen_width, screen_height
         ))
         self.add(self._root)
         self._stack = []
@@ -40,4 +39,3 @@ class Navigator(EventDispatcher):
         super(Navigator, self).on_frame(delta)
         if self._current_view:
             self._current_view
-        pygame.display.flip()

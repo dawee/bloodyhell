@@ -1,19 +1,18 @@
 import os
 import re
 import sys
-import pygame
 import json
 import tempfile
 import uuid
 import zipfile
 from xml.dom.minidom import parse
 
-from bloodyhell.layer.rect import Rect
 
 class ResourcesFolderMissing(Exception):
     """
     Raised if no resources folder has been set
     """
+
 
 class ResourceLoader(object):
 
@@ -75,13 +74,10 @@ class ResourceLoader(object):
                     )
 
     def add_image_resource(self, package, identity, file_path):
-        self._resources[package][identity] = pygame.image.load(file_path)
+        pass
 
     def add_sound_resource(self, package, identity, file_path):
-        try:
-            self._resources[package][identity] = pygame.mixer.Sound(file_path)
-        except:
-            sys.stderr.write('Failed to load sound !\n')
+        pass
 
     def add_json_resource(self, package, identity, file_path):
         self._resources[package][identity] = json.load(open(file_path))
@@ -116,19 +112,7 @@ class ResourceLoader(object):
         """
 
     def get_resource(self, full_resource_id, rect, cropped_rect):
-        package_name, resource_id = full_resource_id.split('.', 1)
-        sub_surface_str = '%s_%s_%s' % (
-            resource_id, rect.width, rect.height
-        )
-        self._sub_surfaces_ids.append('%s.%s' % (package_name, sub_surface_str))
-        if sub_surface_str not in self._resources[package_name]:
-            surface = self._resources[package_name][resource_id]
-            self._resources[package_name][
-                sub_surface_str
-            ] = pygame.transform.scale(
-                surface, (rect.width, rect.height)
-            )
-        return self._resources[package_name][sub_surface_str]
+        return self.get_raw_resource(full_resource_id)
 
     def get_raw_resource(self, full_resource_id):
         package_name, resource_id = full_resource_id.split('.', 1)

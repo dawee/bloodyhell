@@ -14,8 +14,9 @@ class AnimatedLayer(Layer):
         self.rewind()
 
     def rewind(self):
-        self._frame_index = self._frames.keys()[0]
-        self.set_image(self._frames[self._frame_index])
+        if len(self._frames) > 0:
+            self._frame_index = self._frames.keys()[0]
+            self.set_image(self._frames[self._frame_index])
 
     def step(self):
         self._frame_index += 1

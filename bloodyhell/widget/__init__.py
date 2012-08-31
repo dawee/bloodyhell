@@ -112,30 +112,24 @@ class Widget(Layer):
             else:
                 self._rect.bottom = parent_value - value
 
-    def _update_ratio(self, surface):
-        if self._style.get('height', None) == 'auto':
-            self._rect.height = \
-                self._rect.width * surface.get_height() / surface.get_width()
-        elif self._style.get('width', None) == 'auto':
-            self._rect.width = \
-                self._rect.height * surface.get_width() / surface.get_height()
+    def _update_ratio(self):
+        pass
 
     def _update_background(self):
         if 'background-color' in self._style:
             self.fill(self._style['background-color'])
         if 'background-image' in self._style:
             self.set_image(self._style['background-image'])
-            surface = self.loader().get_raw_resource(
-                self._style['background-image']
-            )
-            self._update_ratio(surface)
+            self._update_ratio()
 
     def on_frame(self, delta):
         self._update_size()
         self._update_x_position()
         self._update_y_position()
         self._update_background()
-        self._cropped_rect = Rect((0, 0), (self._rect.width, self._rect.height))
+        self._cropped_rect = Rect(
+            (0, 0), (self._rect.width, self._rect.height)
+        )
         super(Widget, self).on_frame(delta)
 
     @staticmethod

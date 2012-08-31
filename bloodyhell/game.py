@@ -1,4 +1,3 @@
-import pygame
 import time
 import Queue
 
@@ -22,10 +21,7 @@ class Game(object):
                     resources_folder, fps=FRAMES_PER_SECOND):
         super(Game, self).__init__()
         ResourceLoader().set_resources_folder(resources_folder)
-        pygame.init()
-        self._window = pygame.display.set_mode(resolution)
         Widget.set_resolution(resolution)
-        pygame.display.set_caption(name)
         self._frames_delta = 1.0 / fps
         self._navigator = Navigator()
 
@@ -46,7 +42,7 @@ class Game(object):
             if message == 'quit':
                 break
             time_reference = time.time()
-            events = pygame.event.get()
+            events = []
             self._navigator.on_frame(self._frames_delta)
             for event in events:
                 self._navigator.on_event(event)
